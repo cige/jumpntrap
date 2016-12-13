@@ -7,13 +7,15 @@ import java.util.Random;
  */
 
 public class Game {
-    private GameBoard gameBoard;
-    private AbstractPlayer[] players;
+
     private final static int NB_COLUMNS = 8;
     private final static int NB_LINES = 8;
 
+    private GameBoard gameBoard;
+    private AbstractPlayer[] players;
 
     private int turn;
+    private boolean isOver;
 
     public Game(AbstractPlayer... players) {
         assert players.length < NB_COLUMNS * NB_LINES;
@@ -59,5 +61,35 @@ public class Game {
         }
 
         return false;
+    }
+
+    public void start(){
+
+        while(!isOver){
+
+            players[turn].play(this.gameBoard);
+            checkIsOver();
+            turn = (turn + 1) % players.length;
+
+        }
+    }
+
+    private void checkIsOver(){
+
+        boolean flag = false;
+
+        for(AbstractPlayer player:players){
+
+            if(!player.isAlive()) {
+                if (flag) {
+                    isOver = false;
+                    return;
+                }
+                flag = true;
+            }
+
+        }
+
+        isOver = true;
     }
 }

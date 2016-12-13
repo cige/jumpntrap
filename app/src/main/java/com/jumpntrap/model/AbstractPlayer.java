@@ -6,7 +6,7 @@ package com.jumpntrap.model;
 
 public abstract class AbstractPlayer {
     protected Position pos;
-    protected boolean isDead;
+    private boolean isDead;
 
     public AbstractPlayer() {
         isDead = false;
@@ -22,9 +22,8 @@ public abstract class AbstractPlayer {
     public Position getPosition() {
         return pos;
     }
-    /*
-    public boolean isDead(GameBoard gameBoard) {
-        return gameBoard.isTileFallen(pos.x, pos.y);
+
+    public boolean isAlive(){
+        return !isDead;
     }
-    */
 }
