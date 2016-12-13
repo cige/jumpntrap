@@ -124,6 +124,7 @@ public class Game extends Observable {
 
                 builder.append("X");
             }
+            builder.append("\n");
         }
 
         return builder.toString();
