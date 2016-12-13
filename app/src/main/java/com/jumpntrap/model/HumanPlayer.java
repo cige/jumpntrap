@@ -10,7 +10,7 @@ public class HumanPlayer extends AbstractPlayer {
     }
 
     @Override
-    public boolean play(Game game) {
-        return false;
+    public Direction chooseMove(Game game) {
+        return null;
     }
 }

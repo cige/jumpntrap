@@ -31,6 +31,7 @@ public class Game extends Observable {
         gameBoard = new GameBoard(NB_LINES, NB_COLUMNS, this.players.length);
         setPlayersPositions();
         turn = 0;
+        isOver = false;
     }
 
 
@@ -47,7 +48,7 @@ public class Game extends Observable {
                 column = rand.nextInt(NB_COLUMNS);
                 pos = new Position(line,column);
 
-            } while (gameBoard.containsTile(pos) || isTileOccupied(pos));
+            } while (!gameBoard.containsTile(pos) || isTileOccupied(pos));
 
             player.setPosition(pos);
         }
@@ -73,10 +74,18 @@ public class Game extends Observable {
     public void start(){
 
         while(!isOver){
-            players[turn].play(this);
-            checkIsOver();
+            Direction d = players[turn].chooseMove(this);
+            boolean b = players[turn].playMove(this,d);
+            if(!b)
+                checkIsOver();
             turn = (turn + 1) % players.length;
-            this.notifyObservers(this.toString());
+            this.setChanged();
+            this.notifyObservers();
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
         }
     }
@@ -100,6 +109,10 @@ public class Game extends Observable {
         isOver = true;
     }
 
+    public void dropTile(Position position){
+        this.gameBoard.dropTile(position);
+    }
+
     @Override
     public String toString(){
 
@@ -116,12 +129,13 @@ public class Game extends Observable {
         for(int i = 0; i < NB_LINES ; i ++){
             for(int j = 0; j < NB_COLUMNS ; j ++){
 
+                Position position = new Position(i,j);
                 if(board[i][j] == Boolean.TRUE) {
                     builder.append("P");
                     continue;
                 }
 
-                if (gameBoard.containsTile(i,j)){
+                if (gameBoard.containsTile(position)){
                     builder.append("O");
                     continue;
                 }

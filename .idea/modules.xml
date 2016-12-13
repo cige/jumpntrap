@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Jump'nTrap.iml" filepath="$PROJECT_DIR$/Jump'nTrap.iml" />
+      <module fileurl="file://$PROJECT_DIR$/JumpnTrap.iml" filepath="$PROJECT_DIR$/JumpnTrap.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

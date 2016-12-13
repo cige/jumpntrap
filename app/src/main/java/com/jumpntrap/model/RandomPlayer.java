@@ -14,29 +14,27 @@ public class RandomPlayer extends AbstractPlayer {
     }
 
     @Override
-    public boolean play(Game game) {
-        List<Position> positions = new ArrayList<>();
-        // Get valid positions
+    public Direction chooseMove(Game game) {
+        List<Direction> directions = new ArrayList<>();
+        // Get valid directions
         for (Direction direction : Direction.values()) {
             // Get player direction and add direction
-            Position currentPos = new Position(pos);
+            Position currentPos = new Position(position);
             currentPos.add(direction.getPos());
 
             // Check if new position is valid
-            if (!game.boardContainsTile(currentPos) && !game.isTileOccupied(currentPos)) {
-                positions.add(currentPos);
+            if (game.boardContainsTile(currentPos) && !game.isTileOccupied(currentPos)) {
+                directions.add(direction);
             }
         }
 
         // No moves found
-        if (positions.isEmpty()) {
-            return false;
+        if (directions.isEmpty()) {
+            return Direction.getRandom();
         }
 
-        // Set new position
-        int randomIndex = new Random().nextInt(positions.size());
-        setPosition(positions.get(randomIndex));
-
-        return true;
+        // Return random direction
+        int randomIndex = new Random().nextInt(directions.size());
+        return directions.get(randomIndex);
     }
 }
