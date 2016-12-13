@@ -5,11 +5,11 @@ package com.jumpntrap.model;
  */
 
 public class Position {
-    int x;
-    int y;
+    int line;
+    int column;
 
-    public Position(int x, int y) {
-        this.x = x;
-        this.y = y;
+    public Position(int line, int column) {
+        this.line = line;
+        this.column = column;
     }
 }

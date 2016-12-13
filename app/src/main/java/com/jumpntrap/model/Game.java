@@ -7,13 +7,15 @@ import java.util.Random;
  */
 
 public class Game {
-    private GameBoard gameBoard;
-    private AbstractPlayer[] players;
+
     private final static int NB_COLUMNS = 8;
     private final static int NB_LINES = 8;
 
+    private GameBoard gameBoard;
+    private AbstractPlayer[] players;
 
     private int turn;
+    private boolean isOver;
 
     public Game(AbstractPlayer... players) {
         assert players.length < NB_COLUMNS * NB_LINES;
@@ -25,7 +27,7 @@ public class Game {
             this.players[i] = players[i];
         }
 
-        gameBoard = new GameBoard(NB_COLUMNS, NB_LINES, this.players.length);
+        gameBoard = new GameBoard(NB_LINES, NB_COLUMNS, this.players.length);
         setPlayersPositions();
         turn = 0;
     }
@@ -36,42 +38,67 @@ public class Game {
 
         // Place players with a random algorithm
         for (AbstractPlayer player : players) {
-            int x, y;
+            int line, column;
+            Position pos;
+
             do {
-                x = rand.nextInt(NB_COLUMNS);
-                y = rand.nextInt(NB_LINES);
+                line = rand.nextInt(NB_LINES);
+                column = rand.nextInt(NB_COLUMNS);
+                pos = new Position(line,column);
 
-            } while (gameBoard.isTileFallen(x, y) || isTileOccupied(player));
+            } while (gameBoard.isTileFallen(pos) || isTileOccupied(pos));
 
-            player.setPosition(new Position(x, y));
+            player.setPosition(pos);
         }
     }
 
-    public boolean isTileOccupied(AbstractPlayer currentPlayer) {
+    private boolean isTileOccupied(Position position) {
         for (AbstractPlayer player : players) {
-            if (player != currentPlayer) {
                 Position pos = player.getPosition();
 
-                if (pos != null && pos.equals(currentPlayer.getPosition())) {
+                if (pos != null && pos.equals(position)) {
                     return true;
                 }
             }
-        }
+
 
         return false;
     }
 
-    public boolean isTileOccupied(AbstractPlayer currentPlayer, int x, int y) {
-        for (AbstractPlayer player : players) {
-            if (player != currentPlayer) {
-                Position pos = player.getPosition();
+    public void start(){
 
-                if (pos != null && pos.equals(currentPlayer.getPosition())) {
-                    return true;
+        while(!isOver){
+
+            players[turn].play(this.gameBoard);
+            checkIsOver();
+            turn = (turn + 1) % players.length;
+
+        }
+    }
+
+    private void checkIsOver(){
+
+        boolean flag = false;
+
+        for(AbstractPlayer player:players){
+
+            if(!player.isAlive()) {
+                if (flag) {
+                    isOver = false;
+                    return;
                 }
+                flag = true;
             }
+
         }
 
-        return false;
+        isOver = true;
+    }
+
+    @Override
+    public String toString(){
+        boolean[][] board = new boolean[NB_LINES][NB_COLUMNS];
+        //TODO cige
+        return null;
     }
 }
