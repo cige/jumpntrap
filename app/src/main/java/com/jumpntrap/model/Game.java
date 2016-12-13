@@ -27,7 +27,7 @@ public class Game {
             this.players[i] = players[i];
         }
 
-        gameBoard = new GameBoard(NB_COLUMNS, NB_LINES, this.players.length);
+        gameBoard = new GameBoard(NB_LINES, NB_COLUMNS, this.players.length);
         setPlayersPositions();
         turn = 0;
     }
@@ -38,27 +38,29 @@ public class Game {
 
         // Place players with a random algorithm
         for (AbstractPlayer player : players) {
-            int x, y;
+            int line, column;
+            Position pos;
+
             do {
-                x = rand.nextInt(NB_COLUMNS);
-                y = rand.nextInt(NB_LINES);
+                line = rand.nextInt(NB_LINES);
+                column = rand.nextInt(NB_COLUMNS);
+                pos = new Position(line,column);
 
-            } while (gameBoard.isTileFallen(x, y) || isTileOccupied(player));
+            } while (gameBoard.isTileFallen(pos) || isTileOccupied(pos));
 
-            player.setPosition(new Position(x, y));
+            player.setPosition(pos);
         }
     }
 
-    private boolean isTileOccupied(AbstractPlayer currentPlayer) {
+    private boolean isTileOccupied(Position position) {
         for (AbstractPlayer player : players) {
-            if (player != currentPlayer) {
                 Position pos = player.getPosition();
 
-                if (pos != null && pos.equals(currentPlayer.getPosition())) {
+                if (pos != null && pos.equals(position)) {
                     return true;
                 }
             }
-        }
+
 
         return false;
     }
@@ -91,5 +93,12 @@ public class Game {
         }
 
         isOver = true;
+    }
+
+    @Override
+    public String toString(){
+        boolean[][] board = new boolean[NB_LINES][NB_COLUMNS];
+        //TODO cige
+        return null;
     }
 }
