@@ -13,7 +13,7 @@ public abstract class AbstractPlayer {
         pos = null;
     }
 
-    public abstract boolean play(GameBoard gameBoard);
+    public abstract boolean play(Game game);
 
     public void setPosition(Position pos) {
         this.pos = pos;

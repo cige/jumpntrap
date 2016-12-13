@@ -47,7 +47,21 @@ public class Game {
         }
     }
 
-    private boolean isTileOccupied(AbstractPlayer currentPlayer) {
+    public boolean isTileOccupied(AbstractPlayer currentPlayer) {
+        for (AbstractPlayer player : players) {
+            if (player != currentPlayer) {
+                Position pos = player.getPosition();
+
+                if (pos != null && pos.equals(currentPlayer.getPosition())) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public boolean isTileOccupied(AbstractPlayer currentPlayer, int x, int y) {
         for (AbstractPlayer player : players) {
             if (player != currentPlayer) {
                 Position pos = player.getPosition();
