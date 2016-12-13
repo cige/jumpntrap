@@ -52,7 +52,7 @@ public class Game {
         }
     }
 
-    private boolean isTileOccupied(Position position) {
+    public boolean isTileOccupied(Position position) {
         for (AbstractPlayer player : players) {
                 Position pos = player.getPosition();
 
@@ -69,7 +69,7 @@ public class Game {
 
         while(!isOver){
 
-            players[turn].play(this.gameBoard);
+            players[turn].play(this);
             checkIsOver();
             turn = (turn + 1) % players.length;
 
