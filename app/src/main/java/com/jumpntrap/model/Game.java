@@ -46,23 +46,24 @@ public class Game {
                 column = rand.nextInt(NB_COLUMNS);
                 pos = new Position(line,column);
 
-            } while (gameBoard.isTileFallen(pos) || isTileOccupied(pos));
+            } while (gameBoard.containsTile(pos) || isTileOccupied(pos));
 
             player.setPosition(pos);
         }
     }
 
-    public boolean isTileOccupied(Position position) {
+    public boolean isTileOccupied(Position pos) {
         for (AbstractPlayer player : players) {
-                Position pos = player.getPosition();
-
-                if (pos != null && pos.equals(position)) {
-                    return true;
-                }
+            if (pos.equals(player.getPosition())) {
+                return true;
             }
-
+        }
 
         return false;
+    }
+
+    public boolean boardContainsTile(Position pos) {
+        return gameBoard.containsTile(pos);
     }
 
     public void start(){

@@ -12,4 +12,13 @@ public class Position {
         this.line = line;
         this.column = column;
     }
+
+    public Position(Position pos) {
+        this(pos.line, pos.column);
+    }
+
+    public void add(Position pos) {
+        line += pos.line;
+        column += pos.column;
+    }
 }

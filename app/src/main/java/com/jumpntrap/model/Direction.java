@@ -20,6 +20,10 @@ public enum Direction {
         this.pos = pos;
     }
 
+    public Position getPos() {
+        return pos;
+    }
+
     public static Direction getRandom() {
         return values()[(int) (Math.random() * values().length)];
     }

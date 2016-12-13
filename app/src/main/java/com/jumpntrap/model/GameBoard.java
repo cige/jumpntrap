@@ -29,7 +29,9 @@ public class GameBoard {
         // HERE WE HAVE TO CHECK IF THE BOARD IS VALID WITH nbPlayers
     }
 
-    public boolean isTileFallen(Position position) {
-        return tiles[position.line][position.column].isFallen();
+    public boolean containsTile(Position pos) {
+        return pos.line >= 0 && pos.line < nbLines &&
+               pos.column >= 0 && pos.column < nbColumns &&
+               !tiles[pos.line][pos.column].isFallen();
     }
 }

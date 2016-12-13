@@ -1,39 +1,42 @@
 package com.jumpntrap.model;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 /**
  * Created by Victor on 13/12/2016.
  */
 
 public class RandomPlayer extends AbstractPlayer {
-    private Map<Direction, Position> directionPositionMap;
-
     public RandomPlayer() {
         super();
-
-        directionPositionMap = new HashMap<>(Direction.values().length);
-        directionPositionMap.put(Direction.NW, new Position(-1, -1));
-        directionPositionMap.put(Direction.N, new Position(0, -1));
-        directionPositionMap.put(Direction.NE, new Position(1, -1));
-        directionPositionMap.put(Direction.E, new Position(1, 0));
-        directionPositionMap.put(Direction.SE, new Position(1, 1));
-        directionPositionMap.put(Direction.S, new Position(0, 1));
-        directionPositionMap.put(Direction.SW, new Position(-1, 1));
-        directionPositionMap.put(Direction.W, new Position(-1, 0));
     }
 
     @Override
     public boolean play(Game game) {
-        /*
-        Position pos = null;
-        do {
-            pos = directionPositionMap.get(Direction.getRandom());
+        List<Position> positions = new ArrayList<>();
+        // Get valid positions
+        for (Direction direction : Direction.values()) {
+            // Get player direction and add direction
+            Position currentPos = new Position(pos);
+            currentPos.add(direction.getPos());
 
-        } while (game.isTileOccupied(this));
-        */
+            // Check if new position is valid
+            if (!game.boardContainsTile(currentPos) && !game.isTileOccupied(currentPos)) {
+                positions.add(currentPos);
+            }
+        }
 
-        return false;
+        // No moves found
+        if (positions.isEmpty()) {
+            return false;
+        }
+
+        // Set new position
+        int randomIndex = new Random().nextInt(positions.size());
+        setPosition(positions.get(randomIndex));
+
+        return true;
     }
 }
