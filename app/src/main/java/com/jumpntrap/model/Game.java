@@ -47,7 +47,7 @@ public class Game extends Observable {
                 column = rand.nextInt(NB_COLUMNS);
                 pos = new Position(line,column);
 
-            } while (!gameBoard.containsTile(pos) || isTileOccupied(pos));
+            } while (gameBoard.containsTile(pos) || isTileOccupied(pos));
 
             player.setPosition(pos);
         }
@@ -64,6 +64,10 @@ public class Game extends Observable {
 
 
         return false;
+    }
+
+    public boolean boardContainsTile(Position pos) {
+        return gameBoard.containsTile(pos);
     }
 
     public void start(){
