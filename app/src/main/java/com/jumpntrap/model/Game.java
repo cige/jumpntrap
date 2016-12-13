@@ -1,12 +1,13 @@
 package com.jumpntrap.model;
 
+import java.util.Observable;
 import java.util.Random;
 
 /**
  * Created by Victor on 13/12/2016.
  */
 
-public class Game {
+public class Game extends Observable {
 
     private final static int NB_COLUMNS = 8;
     private final static int NB_LINES = 8;
@@ -46,7 +47,7 @@ public class Game {
                 column = rand.nextInt(NB_COLUMNS);
                 pos = new Position(line,column);
 
-            } while (gameBoard.isTileFallen(pos) || isTileOccupied(pos));
+            } while (!gameBoard.containsTile(pos) || isTileOccupied(pos));
 
             player.setPosition(pos);
         }
@@ -68,10 +69,10 @@ public class Game {
     public void start(){
 
         while(!isOver){
-
             players[turn].play(this);
             checkIsOver();
             turn = (turn + 1) % players.length;
+            this.notifyObservers(this.toString());
 
         }
     }
@@ -97,8 +98,34 @@ public class Game {
 
     @Override
     public String toString(){
-        boolean[][] board = new boolean[NB_LINES][NB_COLUMNS];
-        //TODO cige
-        return null;
+
+        StringBuilder builder = new StringBuilder();
+        Boolean[][] board = new Boolean[NB_LINES][NB_COLUMNS];
+
+
+        for(AbstractPlayer player : players){
+            Position p = player.getPosition();
+            if(p != null)
+                board[p.line][p.column] =  true;
+        }
+
+        for(int i = 0; i < NB_LINES ; i ++){
+            for(int j = 0; j < NB_COLUMNS ; j ++){
+
+                if(board[i][j] == Boolean.TRUE) {
+                    builder.append("P");
+                    continue;
+                }
+
+                if (gameBoard.containsTile(i,j)){
+                    builder.append("O");
+                    continue;
+                }
+
+                builder.append("X");
+            }
+        }
+
+        return builder.toString();
     }
 }

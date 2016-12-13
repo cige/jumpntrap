@@ -29,7 +29,13 @@ public class GameBoard {
         // HERE WE HAVE TO CHECK IF THE BOARD IS VALID WITH nbPlayers
     }
 
-    public boolean isTileFallen(Position position) {
-        return tiles[position.line][position.column].isFallen();
+    public boolean containsTile(Position position) {
+       return containsTile(position.line,position.column);
+    }
+
+    public boolean containsTile(int line, int column) {
+        if(line < 0 || column < 0 || line >= nbLines || column >= nbColumns)
+            return false;
+        return tiles[line][column].isFallen();
     }
 }

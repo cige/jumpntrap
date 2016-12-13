@@ -1,5 +1,7 @@
 package com.jumpntrap.model;
 
+import java.util.ArrayList;
+
 /**
  * Created by Victor on 13/12/2016.
  */
