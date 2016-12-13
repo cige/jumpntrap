@@ -9,21 +9,23 @@ public class GameBoard {
     private final int nbColumns;
     private final int nbLines;
 
-    public GameBoard(int nbColumns, int nbLines) {
+    public GameBoard(int nbColumns, int nbLines, int nbPlayers) {
         this.nbColumns = nbColumns;
         this.nbLines = nbLines;
 
-        generateTiles();
+        generateTiles(nbPlayers);
     }
 
-    private void generateTiles() {
+    private void generateTiles(int nbPlayers) {
         tiles = new Tile[nbColumns][nbLines];
 
         for (int i = 0; i < nbColumns; ++i) {
             for (int j = 0; j < nbLines; ++j) {
-                tiles[i][j] = new Tile(true);
+                tiles[i][j] = new Tile();
             }
         }
+
+        // HERE WE HAVE TO CHECK IF THE BOARD IS VALID WITH nbPlayers
     }
 
     public boolean isTileFallen(int x, int y) {

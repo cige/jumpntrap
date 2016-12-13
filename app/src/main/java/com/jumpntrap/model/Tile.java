@@ -7,8 +7,8 @@ package com.jumpntrap.model;
 public class Tile {
     private boolean isFallen;
 
-    public Tile(boolean isFallen) {
-        this.isFallen = isFallen;
+    public Tile() {
+        isFallen = false;
     }
 
     public void drop() {

@@ -17,7 +17,7 @@ public class Game {
 
     public Game(AbstractPlayer... players) {
         assert players.length < NB_COLUMNS * NB_LINES;
-        
+
 
         // "Init" players
         this.players = new AbstractPlayer[players.length];
@@ -25,7 +25,7 @@ public class Game {
             this.players[i] = players[i];
         }
 
-        gameBoard = new GameBoard(NB_COLUMNS, NB_LINES);
+        gameBoard = new GameBoard(NB_COLUMNS, NB_LINES, this.players.length);
         setPlayersPositions();
         turn = 0;
     }
