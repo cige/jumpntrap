@@ -23,4 +23,12 @@ public class Position {
         line += pos.line;
         column += pos.column;
     }
+
+    public int getColumn() {
+        return column;
+    }
+
+    public int getLine() {
+        return line;
+    }
 }

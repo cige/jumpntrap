@@ -30,7 +30,7 @@ public abstract class AbstractPlayer {
         return !isDead;
     }
 
-    public boolean playMove(Game game, Direction direction){
+    public final boolean playMove(Game game, Direction direction){
 
         Position newPosition = direction.newPosition(position);
         game.dropTile(position);

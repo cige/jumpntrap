@@ -33,6 +33,13 @@ public class RandomPlayer extends AbstractPlayer {
             return Direction.getRandom();
         }
 
+        // Simulating a reflexion time
+        try {
+            Thread.sleep((long) (Math.random()*1000));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
         // Return random direction
         int randomIndex = new Random().nextInt(directions.size());
         return directions.get(randomIndex);

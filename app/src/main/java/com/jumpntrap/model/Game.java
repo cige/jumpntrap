@@ -7,10 +7,10 @@ import java.util.Random;
  * Created by Victor on 13/12/2016.
  */
 
-public class Game extends Observable {
+public class Game{
 
-    private final static int NB_COLUMNS = 8;
-    private final static int NB_LINES = 8;
+    public final static int NB_COLUMNS = 4;
+    public final static int NB_LINES = 6;
 
     private GameBoard gameBoard;
     private AbstractPlayer[] players;
@@ -46,7 +46,7 @@ public class Game extends Observable {
             do {
                 line = rand.nextInt(NB_LINES);
                 column = rand.nextInt(NB_COLUMNS);
-                pos = new Position(line,column);
+                pos = new Position(line, column);
 
             } while (!gameBoard.containsTile(pos) || isTileOccupied(pos));
 
@@ -56,13 +56,12 @@ public class Game extends Observable {
 
     public boolean isTileOccupied(Position position) {
         for (AbstractPlayer player : players) {
-                Position pos = player.getPosition();
+            Position pos = player.getPosition();
 
-                if (pos != null && pos.equals(position)) {
-                    return true;
-                }
+            if (pos != null && pos.equals(position)) {
+                return true;
             }
-
+        }
 
         return false;
     }
@@ -71,32 +70,25 @@ public class Game extends Observable {
         return gameBoard.containsTile(pos);
     }
 
-    public void start(){
+    public void start() {
 
-        while(!isOver){
+        while (!isOver) {
             Direction d = players[turn].chooseMove(this);
-            boolean b = players[turn].playMove(this,d);
-            if(!b)
+            boolean b = players[turn].playMove(this, d);
+            if (!b)
                 checkIsOver();
             turn = (turn + 1) % players.length;
-            this.setChanged();
-            this.notifyObservers();
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
 
         }
     }
 
-    private void checkIsOver(){
+    private void checkIsOver() {
 
         boolean flag = false;
 
-        for(AbstractPlayer player:players){
+        for (AbstractPlayer player : players) {
 
-            if(!player.isAlive()) {
+            if (!player.isAlive()) {
                 if (flag) {
                     isOver = false;
                     return;
@@ -109,33 +101,33 @@ public class Game extends Observable {
         isOver = true;
     }
 
-    public void dropTile(Position position){
+    public void dropTile(Position position) {
         this.gameBoard.dropTile(position);
     }
 
     @Override
-    public String toString(){
+    public String toString() {
 
         StringBuilder builder = new StringBuilder();
         Boolean[][] board = new Boolean[NB_LINES][NB_COLUMNS];
 
 
-        for(AbstractPlayer player : players){
+        for (AbstractPlayer player : players) {
             Position p = player.getPosition();
-            if(p != null)
-                board[p.line][p.column] =  true;
+            if (p != null)
+                board[p.line][p.column] = true;
         }
 
-        for(int i = 0; i < NB_LINES ; i ++){
-            for(int j = 0; j < NB_COLUMNS ; j ++){
+        for (int i = 0; i < NB_LINES; i++) {
+            for (int j = 0; j < NB_COLUMNS; j++) {
 
-                Position position = new Position(i,j);
-                if(board[i][j] == Boolean.TRUE) {
+                Position position = new Position(i, j);
+                if (board[i][j] == Boolean.TRUE) {
                     builder.append("P");
                     continue;
                 }
 
-                if (gameBoard.containsTile(position)){
+                if (gameBoard.containsTile(position)) {
                     builder.append("O");
                     continue;
                 }
@@ -146,5 +138,13 @@ public class Game extends Observable {
         }
 
         return builder.toString();
+    }
+
+    public GameBoard getGameBoard() {
+        return gameBoard;
+    }
+
+    public AbstractPlayer[] getPlayers(){
+        return players;
     }
 }
