@@ -17,6 +17,10 @@
             style="@style/MainScreenButton"
             android:id="@+id/btn_quick_game"
             android:text="@string/quick_game" />
+        <Button
+            style="@style/MainScreenButton"
+            android:id="@+id/btn_show_games"
+            android:text="@string/quick_game" />
     </LinearLayout>
 
     <!-- SIGN-IN SCREEN -->

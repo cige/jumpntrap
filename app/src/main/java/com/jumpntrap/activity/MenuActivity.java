@@ -8,30 +8,29 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
-import android.widget.Toast;
+import android.view.WindowManager;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.games.Games;
-import com.google.android.gms.games.multiplayer.Invitation;
-import com.google.android.gms.games.multiplayer.OnInvitationReceivedListener;
+import com.google.android.gms.games.GamesActivityResultCodes;
+import com.google.android.gms.games.GamesStatusCodes;
+import com.google.android.gms.games.multiplayer.Participant;
+import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
+import com.google.android.gms.games.multiplayer.realtime.RealTimeMessageReceivedListener;
+import com.google.android.gms.games.multiplayer.realtime.Room;
 import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
-import com.google.android.gms.games.multiplayer.turnbased.OnTurnBasedMatchUpdateReceivedListener;
-import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatch;
-import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMatchConfig;
-import com.google.android.gms.games.multiplayer.turnbased.TurnBasedMultiplayer;
+import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListener;
+import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
 import com.google.example.games.basegameutils.BaseGameUtils;
 import com.jumpntrap.R;
-import com.jumpntrap.tbm.Turn;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class MenuActivity extends AppCompatActivity
         implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        View.OnClickListener, OnTurnBasedMatchUpdateReceivedListener,
-        OnInvitationReceivedListener {
+        View.OnClickListener, RealTimeMessageReceivedListener,
+        RoomStatusUpdateListener, RoomUpdateListener {
     private final static String TAG = "MenuActivity";
     private GoogleApiClient googleApiClient;
 
@@ -40,8 +39,7 @@ public class MenuActivity extends AppCompatActivity
     private boolean mSignInClicked = false;
 
     private final static int RC_SIGN_IN = 9001;
-    //private final static int RC_WAITING_ROOM = 10002;
-    private final static int RC_SELECT_PLAYERS = 10000;
+    private final static int RC_WAITING_ROOM = 10002;
 
     final static int[] SCREENS = {
             R.id.screen_main,
@@ -56,8 +54,8 @@ public class MenuActivity extends AppCompatActivity
             R.id.btn_sign_in
     };
 
-    //private List<Participant> participants = null;
-    //private String roomId = null;
+    private List<Participant> participants = null;
+    private String roomId = null;
 
 
     @Override
@@ -100,11 +98,6 @@ public class MenuActivity extends AppCompatActivity
     private void startQuickGame() {
         Log.d(TAG, "Start quick game");
 
-        Intent intent =
-                Games.TurnBasedMultiplayer.getSelectOpponentsIntent(googleApiClient, 1, 1, true);
-        startActivityForResult(intent, RC_SELECT_PLAYERS);
-
-        /*
         // Quick-start a game with 1 randomly selected opponent
         Bundle autoMatchCriteria = RoomConfig.createAutoMatchCriteria(1, 1, 0);
 
@@ -117,7 +110,6 @@ public class MenuActivity extends AppCompatActivity
         //resetGameVars();
 
         Games.RealTimeMultiplayer.create(googleApiClient, rtmConfigBuilder.build());
-        */
     }
 
     private void signIn() {
@@ -143,7 +135,6 @@ public class MenuActivity extends AppCompatActivity
         }
     }
 
-    /*
     private void showWaitingRoom(Room room) {
         // minimum number of players required for our game
         // For simplicity, we require everyone to join the game before we start it
@@ -158,13 +149,10 @@ public class MenuActivity extends AppCompatActivity
         // Show waiting room
         startActivityForResult(intent, RC_WAITING_ROOM);
     }
-    */
 
-    /*
     private void keepScreenOn() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
-    */
 
     private void switchToMainScreen() {
         switchToScreen(
@@ -175,20 +163,16 @@ public class MenuActivity extends AppCompatActivity
         );
     }
 
-    /*
     private void showGameError() {
         BaseGameUtils.makeSimpleDialog(this, getString(R.string.game_problem));
         switchToMainScreen();
     }
-    */
 
-    /*
     private void updateRoom(Room room) {
         if (room != null) {
             participants = room.getParticipants();
         }
     }
-    */
 
     @Override
     public void onClick(View view) {
@@ -211,7 +195,6 @@ public class MenuActivity extends AppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            /*
             case RC_WAITING_ROOM:
                 // we got the result from the "waiting room" UI.
                 if (resultCode == Activity.RESULT_OK) {
@@ -230,138 +213,15 @@ public class MenuActivity extends AppCompatActivity
                     //leaveRoom();
                 }
                 break;
-            */
-            case RC_SELECT_PLAYERS:
-                Log.d(TAG, "onActivityResult - RC_SELECT_PLAYERS: " + resultCode);
-
-                if (resultCode != Activity.RESULT_OK) {
-                    Log.e(TAG, "**Error: onActivityResult - RC_SELECT_PLAYERS");
-                    return;
-                }
-
-                // Get the invitee list.
-                final ArrayList<String> invitees =
-                        data.getStringArrayListExtra(Games.EXTRA_PLAYER_IDS);
-
-                // Auto-match criteria : 1 random player
-                Bundle amCriteria = RoomConfig.createAutoMatchCriteria(1, 1, 0);
-
-                // Config
-                TurnBasedMatchConfig tbmc = TurnBasedMatchConfig.builder()
-                        .addInvitedPlayers(invitees)
-                        .setAutoMatchCriteria(amCriteria)
-                        .build();
-
-                // Create and start the match.
-                Games.TurnBasedMultiplayer
-                        .createMatch(googleApiClient, tbmc)
-                        // Callback to init game
-                        .setResultCallback(new ResultCallback<TurnBasedMultiplayer.InitiateMatchResult>() {
-                            @Override
-                            public void onResult(@NonNull TurnBasedMultiplayer.InitiateMatchResult result) {
-                                processResult(result);
-                            }
-                        });
-                break;
         }
 
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    private Turn turnData;
-    private TurnBasedMatch match;
-
-    // Init game
-    private void processResult(TurnBasedMultiplayer.InitiateMatchResult result) {
-        // Check if the status code is not success
-        Status status = result.getStatus();
-        if (!status.isSuccess()) {
-            Log.e(TAG, "**Error : " + status.getStatusCode());
-            return;
-        }
-
-        TurnBasedMatch match = result.getMatch();
-
-        // Game has already started
-        if (match.getData() != null) {
-            Log.d(TAG, "processResult InitiateMatchResult - updateMatch");
-            updateMatch(match);
-        } else {
-            Log.d(TAG, "processResult InitiateMatchResult - startMatch");
-            startMatch(match);
-        }
-    }
-
-    // Should I be showing the turn API?
-    public boolean isDoingTurn = false;
-
-    // Update game
-    public void processResult(TurnBasedMultiplayer.UpdateMatchResult result) {
-        TurnBasedMatch match = result.getMatch();
-
-        // Rematch ?
-        //if (match.canRematch()) {
-        //askForRematch();
-        //}
-
-        isDoingTurn = match.getTurnStatus() == TurnBasedMatch.MATCH_TURN_STATUS_MY_TURN;
-        if (isDoingTurn) {
-            updateMatch(match);
-        }
-        //else {
-        //setViewVisibility();
-        //}
-    }
-
-    private void startMatch(TurnBasedMatch match) {
-        // Create a new turn
-        turnData = new Turn();
-
-        // Keep match
-        this.match = match;
-
-        // Get current player
-        Log.e(TAG, "Nb part : " + match.getParticipantIds().size());
-        String playerId = Games.Players.getCurrentPlayerId(googleApiClient);
-        String myParticipantId = this.match.getParticipantId(playerId);
-
-        // Update match with new turn data
-        /*
-        Games.TurnBasedMultiplayer.takeTurn(
-                googleApiClient,
-                this.match.getMatchId(),
-                turnData.persist(), // Data are here
-                myParticipantId)
-                .setResultCallback(new ResultCallback<TurnBasedMultiplayer.UpdateMatchResult>() {
-                    @Override
-                    public void onResult(@NonNull TurnBasedMultiplayer.UpdateMatchResult result) {
-                        processResult(result);
-                    }
-                });
-         */
-    }
-
-    private void updateMatch(TurnBasedMatch match) {
-
     }
 
     @Override
     public void onConnected(@Nullable Bundle bundle) {
         Log.d(TAG, "onConnected() called. Sign in successful!");
         switchToMainScreen();
-
-        Games.Invitations.loadInvitations(googleApiClient);
-
-        // This is *NOT* required; if you do not register a handler for
-        // invitation events, you will get standard notifications instead.
-        // Standard notifications may be preferable behavior in many cases.
-        Games.Invitations.registerInvitationListener(googleApiClient, this);
-
-        // Likewise, we are registering the optional MatchUpdateListener, which
-        // will replace notifications you would get otherwise. You do *NOT* have
-        // to register a MatchUpdateListener.
-        Games.TurnBasedMultiplayer.registerMatchUpdateListener(googleApiClient, this);
-
     }
 
     @Override
@@ -393,38 +253,6 @@ public class MenuActivity extends AppCompatActivity
         switchToScreen(R.id.screen_sign_in);
     }
 
-    @Override
-    public void onTurnBasedMatchReceived(TurnBasedMatch turnBasedMatch) {
-    }
-
-    @Override
-    public void onTurnBasedMatchRemoved(String s) {
-
-    }
-
-    @Override
-    public void onInvitationReceived(Invitation invitation) {
-        Log.e(TAG, "INVITATION");
-        final Invitation localInvitation = invitation;
-        final Activity activity = this;
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                Toast.makeText(
-                        activity,
-                        "An invitation has arrived from "
-                                + localInvitation.getInviter().getDisplayName(), Toast.LENGTH_SHORT)
-                        .show();
-            }
-        });
-    }
-
-    @Override
-    public void onInvitationRemoved(String s) {
-
-    }
-
-    /*
     @Override
     public void onRoomCreated(int statusCode, Room room) {
         Log.d(TAG, "onRoomCreated(" + statusCode + ", " + room + ")");
@@ -526,5 +354,9 @@ public class MenuActivity extends AppCompatActivity
     public void onP2PDisconnected(String s) {
 
     }
-    */
+
+    @Override
+    public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
+
+    }
 }
