@@ -91,35 +91,35 @@ public class HumanPlayer extends Player implements OnTouchListener {
         }
 
         private void onSwipeRight() {
-            game.handleHumanMove(Direction.E,this);
+            game.handleMove(Direction.E,this);
         }
 
         private void onSwipeLeft() {
-            game.handleHumanMove(Direction.W,this);
+            game.handleMove(Direction.W,this);
         }
 
         private void onSwipeTop() {
-            game.handleHumanMove(Direction.N,this);
+            game.handleMove(Direction.N,this);
         }
 
         private void onSwipeBottom() {
-            game.handleHumanMove(Direction.S,this);
+            game.handleMove(Direction.S,this);
         }
 
         private void onSwipeTopRight() {
-            game.handleHumanMove(Direction.NE,this);
+            game.handleMove(Direction.NE,this);
         }
 
         private void onSwipeTopLeft() {
-            game.handleHumanMove(Direction.NW,this);
+            game.handleMove(Direction.NW,this);
         }
 
         private void onSwipeBottomRight() {
-            game.handleHumanMove(Direction.SE,this);
+            game.handleMove(Direction.SE,this);
         }
 
         private void onSwipeBottomLeft() {
-            game.handleHumanMove(Direction.SW,this);
+            game.handleMove(Direction.SW,this);
         }
 
         @Override

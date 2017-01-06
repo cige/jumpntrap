@@ -81,6 +81,10 @@ public abstract class Game {
         return turn;
     }
 
+    private final Player nextPlayer(){
+        return players.get(turn);
+    }
+
     public boolean boardContainsTile(Position pos) {
         return gameBoard.containsTile(pos);
     }
@@ -94,7 +98,9 @@ public abstract class Game {
             throw new RuntimeException("Too many players in the game");
 
         setPlayersPositions();
+        toss();
         this.state = GameState.STARTED;
+        nextPlayer().actionRequired(this);
 
     }
 
@@ -142,53 +148,22 @@ public abstract class Game {
         return gameBoard;
     }
 
-    final void handleMove(Direction direction, Player player){
-        Player nextPlayer = players.get(turn);
-        if(player != nextPlayer)
+    public final void handleMove(Direction direction, Player player){
+
+        if(player != nextPlayer())
             return;
+
         player.playMove(this,direction);
         turn = (turn + 1) % nbPlayers;
-    }
 
-    public void handleHumanMove(Direction direction, Player player){
-    };
-
-    public void handleRemoteMove(Direction direction,Player player){
-    };
-
-    public void handleIAMove(Direction direction,Player player){
-    };
-
-    final void waitHumanMove(){
         if(!isOver())
-        this.state = GameState.WAITING_HUMAN_MOVE;
-    }
-
-    final void waitIAMove(){
-        if(!isOver())
-        this.state = GameState.WAITING_IA_MOVE;
-    }
-
-    final void waitRemoteMove(){
-        if(!isOver())
-        this.state = GameState.WAITING_REMOTE_MOVE;
+            nextPlayer().actionRequired(this);
     }
 
     final boolean isOver(){
         return this.state == GameState.GAMEOVER;
     }
 
-    final boolean isWaitingHumanMove(){
-        return this.state == GameState.WAITING_HUMAN_MOVE;
-    }
-
-    final boolean isWaitingIAMove(){
-        return this.state == GameState.WAITING_IA_MOVE;
-    }
-
-    final boolean isWaitingRemoteMove(){
-        return this.state == GameState.WAITING_REMOTE_MOVE;
-    }
 
     @Override
     public String toString() {

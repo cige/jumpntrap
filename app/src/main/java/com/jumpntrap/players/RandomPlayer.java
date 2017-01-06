@@ -21,7 +21,7 @@ public class RandomPlayer extends Player {
     @Override
     public void actionRequired(Game game) {
         Direction direction = chooseMove(game);
-        game.handleIAMove(direction,this);
+        game.handleMove(direction,this);
     }
 
     private final Direction chooseMove(Game game) {

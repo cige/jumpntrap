@@ -4,7 +4,7 @@ package com.jumpntrap.model;
  * Created by clementgeorge on 06/01/17.
  */
 
-public abstract class OneVSOneGame extends Game {
+public final class OneVSOneGame extends Game {
 
     private Player p1;
     private Player p2;
