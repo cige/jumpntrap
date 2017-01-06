@@ -9,7 +9,7 @@ import com.jumpntrap.players.HumanPlayer;
 import com.jumpntrap.players.RandomPlayer;
 import com.jumpntrap.view.GameView;
 
-public class MatchActivity extends AppCompatActivity{
+public class GameActivity extends AppCompatActivity{
 
     public final static String GAME_TYPE = "GAME_TYPE";
 

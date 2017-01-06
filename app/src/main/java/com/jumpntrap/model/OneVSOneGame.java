@@ -6,32 +6,28 @@ package com.jumpntrap.model;
 
 public final class OneVSOneGame extends Game {
 
-    private Player p1;
-    private Player p2;
-    private Match match;
+    private Player player1;
+    private Player player2;
+
+    private int player1Score = 0;
+    private int player2Score = 0;
 
     public OneVSOneGame(Player player1,Player player2) {
         super(2);
-        this.p1 = player1;
-        this.p2 = player2;
-        addPlayer(p1);
-        addPlayer(p2);
-        match = null;
+        this.player1 = player1;
+        this.player2 = player2;
+        addPlayer(this.player1);
+        addPlayer(this.player2);
     }
-
-    public void setMatch(Match match){
-        this.match = match;
-    }
-
     @Override
     public final Player checkIsOver() {
         Player winner = super.checkIsOver();
-        if(winner == null || match == null)
+        if(winner == null)
             return null;
-        if(winner == p1)
-            match.incrementP1Score();
-        else if(winner == p2)
-            match.incrementP2Score();
+        if(winner == player1)
+            player1Score ++;
+        else if(winner == player2)
+            player2Score ++;
         return winner;
     }
 }
