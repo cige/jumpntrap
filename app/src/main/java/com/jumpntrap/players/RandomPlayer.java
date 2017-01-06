@@ -1,4 +1,9 @@
-package com.jumpntrap.model;
+package com.jumpntrap.players;
+
+import com.jumpntrap.model.Player;
+import com.jumpntrap.model.Direction;
+import com.jumpntrap.model.Position;
+import com.jumpntrap.model.game.Game;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,22 +13,29 @@ import java.util.Random;
  * Created by Victor on 13/12/2016.
  */
 
-public class RandomPlayer extends AbstractPlayer {
-    public RandomPlayer() {
-        super();
+public class RandomPlayer extends Player {
+
+    private final Game game;
+
+    public RandomPlayer(Game game) {
+        this.game = game;
     }
 
     @Override
-    public Direction chooseMove(Game game) {
+    public void actionRequired() {
+        Direction direction = chooseMove();
+        game.handleIAMove(direction,this);
+    }
+
+    private final Direction chooseMove() {
         List<Direction> directions = new ArrayList<>();
         // Get valid directions
         for (Direction direction : Direction.values()) {
             // Get player direction and add direction
-            Position currentPos = new Position(position);
-            currentPos.add(direction.getPos());
+            Position newPosition = getPosition().add(direction.getPos());
 
             // Check if new position is valid
-            if (game.boardContainsTile(currentPos) && !game.isTileOccupied(currentPos)) {
+            if (game.boardContainsTile(newPosition) && !game.isTileOccupied(newPosition)) {
                 directions.add(direction);
             }
         }

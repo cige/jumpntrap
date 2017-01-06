@@ -1,27 +1,28 @@
-package com.jumpntrap.controller;
+package com.jumpntrap.players;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
+import com.jumpntrap.model.Player;
 import com.jumpntrap.model.Direction;
-import com.jumpntrap.model.HumanPlayer;
+import com.jumpntrap.model.game.Game;
 
 /**
  * Based on: http://stackoverflow.com/questions/4139288/android-how-to-handle-right-to-left-swipe-gestures
  */
-public class HumanPlayerController implements OnTouchListener {
+public class HumanPlayer extends Player implements OnTouchListener {
 
     private final GestureDetector gestureDetector;
-    private final HumanPlayer player;
+    private final Game game;
 
-    public HumanPlayerController(Context ctx, HumanPlayer player){
-        gestureDetector = new GestureDetector(ctx, new GestureListener());
-        this.player = player;
+    public HumanPlayer(Context context, Game game){
+        super();
+        this.game = game;
+        gestureDetector = new GestureDetector(context, new GestureListener());
     }
 
     @Override
@@ -71,31 +72,19 @@ public class HumanPlayerController implements OnTouchListener {
         }
     }
 
-    public void onSwipeRight() {
-        synchronized (player) {
-            player.setDirection(Direction.E);
-            player.notify();
-        }
+    private void onSwipeRight() {
+        game.handleHumanMove(Direction.E,this);
     }
 
-    public void onSwipeLeft() {
-        synchronized (player) {
-        player.setDirection(Direction.W);
-        player.notify();
-        }
+    private void onSwipeLeft() {
+        game.handleHumanMove(Direction.W,this);
     }
 
-    public void onSwipeTop() {
-        synchronized (player) {
-        player.setDirection(Direction.N);
-        player.notify();
-        }
+    private void onSwipeTop() {
+        game.handleHumanMove(Direction.N,this);
     }
 
-    public void onSwipeBottom() {
-        synchronized (player) {
-        player.setDirection(Direction.S);
-        player.notify();
-        }
+    private void onSwipeBottom() {
+        game.handleHumanMove(Direction.S,this);
     }
 }
