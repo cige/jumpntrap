@@ -1,4 +1,4 @@
-package com.jumpntrap.model.game;
+package com.jumpntrap.model;
 
 import android.util.Log;
 
@@ -26,6 +26,8 @@ public abstract class Game {
 
     final int nbPlayers;
     final List<Player> players;
+
+    private int turn;
 
     public Game(int nbPlayers) {
 
@@ -74,6 +76,11 @@ public abstract class Game {
         return false;
     }
 
+    private final int toss(){
+        turn = (int)(Math.random() * nbPlayers);
+        return turn;
+    }
+
     public boolean boardContainsTile(Position pos) {
         return gameBoard.containsTile(pos);
     }
@@ -83,30 +90,48 @@ public abstract class Game {
         if(players.size() < nbPlayers)
             throw new RuntimeException("The game require more players");
 
-        this.state = GameState.STARTED;
+        if(players.size() > nbPlayers)
+            throw new RuntimeException("Too many players in the game");
+
         setPlayersPositions();
+        this.state = GameState.STARTED;
+
+    }
+
+    public void restart() {
+
+        for(Player p: getPlayers()) {
+            p.setPosition(null);
+            p.resurrect();
+        }
+
+        gameBoard.restart(nbPlayers);
+
+       start();
     }
 
     /**
      * A game isn't over if at least 2 players are still alive.
+     * @return the winner of the game, if exists.
      */
-    final void checkIsOver() {
+    public Player checkIsOver() {
 
-        boolean flag = false;
+        Player winner = null;
 
         for (Player player : getPlayers()) {
 
             if (player.isAlive()) {
-                if (flag){
-                    return;
+
+                if (winner != null){
+                    return null;
                 }
-                flag = true;
+                winner = player;
             }
 
         }
 
         this.state = GameState.GAMEOVER;
-        Log.d("","GAME OVER!");
+        return winner;
     }
 
     public final void dropTile(Position position) {
@@ -115,6 +140,14 @@ public abstract class Game {
 
     public final GameBoard getGameBoard() {
         return gameBoard;
+    }
+
+    final void handleMove(Direction direction, Player player){
+        Player nextPlayer = players.get(turn);
+        if(player != nextPlayer)
+            return;
+        player.playMove(this,direction);
+        turn = (turn + 1) % nbPlayers;
     }
 
     public void handleHumanMove(Direction direction, Player player){

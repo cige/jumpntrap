@@ -1,7 +1,5 @@
 package com.jumpntrap.model;
 
-import com.jumpntrap.model.game.Game;
-
 public class Player {
 
     private Position position;
@@ -38,8 +36,17 @@ public class Player {
         }
 
         isDead = true;
+        game.checkIsOver();
     }
 
-    public void actionRequired(){
+    public void actionRequired(Game game){
+    }
+
+    public boolean isMainPlayer(){
+        return false;
+    }
+
+    public void resurrect() {
+        isDead = false;
     }
 }

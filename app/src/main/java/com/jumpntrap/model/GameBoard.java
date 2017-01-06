@@ -48,4 +48,8 @@ public class GameBoard {
             return;
         tiles[line][column].drop();
     }
+
+    void restart(int nbPlayers) {
+        generateTiles(nbPlayers);
+    }
 }

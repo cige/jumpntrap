@@ -1,29 +1,16 @@
-package com.jumpntrap.model.game;
-
-import com.jumpntrap.model.Player;
-import com.jumpntrap.model.Direction;
+package com.jumpntrap.model;
 
 /**
  * Created by clementgeorge on 05/01/17.
  */
 
-public final class HumanVSComputerGame extends Game {
+public final class HumanVSComputerGame extends OneVSOneGame {
 
     private Player human;
     private Player computer;
 
-    public HumanVSComputerGame() {
-        super(2);
-    }
-
-    public final void setHumanPlayer(Player player){
-        this.human = player;
-        addPlayer(player);
-    }
-
-    public final void setComputerPlayer(Player player){
-        this.computer = player;
-        addPlayer(player);
+    public HumanVSComputerGame(Player human,Player computer) {
+        super(human,computer);
     }
 
     @Override
@@ -41,11 +28,11 @@ public final class HumanVSComputerGame extends Game {
         if(player != human)
             return;
 
-        player.playMove(this,direction);
-        checkIsOver();
+        super.handleMove(direction,player);
+
         this.waitIAMove();
 
-        computer.actionRequired();
+        computer.actionRequired(this);
     }
 
     @Override
@@ -57,8 +44,7 @@ public final class HumanVSComputerGame extends Game {
         if(player != computer)
             return;
 
-        player.playMove(this,direction);
-        checkIsOver();
+        super.handleMove(direction,player);
 
         waitHumanMove();
         return;

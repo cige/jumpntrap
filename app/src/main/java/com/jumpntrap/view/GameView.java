@@ -10,7 +10,7 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
 import com.jumpntrap.model.Player;
-import com.jumpntrap.model.game.Game;
+import com.jumpntrap.model.Game;
 import com.jumpntrap.model.GameBoard;
 import com.jumpntrap.model.Position;
 
@@ -62,7 +62,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         Random rand = new Random();
         Paint p = new Paint();
-        p.setColor(Color.BLUE);
+        p.setColor(Color.GRAY);
 
         for(int line = 0; line < nbLines; line ++){
             columnCursor = 0;
@@ -80,10 +80,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private void drawPlayers(Canvas canvas) {
 
         Paint p = new Paint();
-        p.setColor(Color.RED);
+
         int radius = tileLength / 2;
 
         for(Player player: game.getPlayers()){
+
+            if(player.isMainPlayer())
+                p.setColor(Color.BLUE);
+            else
+                p.setColor(Color.RED);
+
             if(player.isAlive()) {
                 canvas.drawCircle(tileLength*player.getPosition().getColumn()+ radius,tileLength*player.getPosition().getLine()+ radius, radius,p);
             }
