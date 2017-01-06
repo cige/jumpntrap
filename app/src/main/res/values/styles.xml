@@ -8,4 +8,52 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- Screen -->
+    <style name="GameScreen">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:gravity">center</item>
+        <item name="android:visibility">gone</item>
+    </style>
+
+    <style name="LLScreen" parent="@style/GameScreen">
+        <item name="android:orientation">vertical</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">30dp</item>
+    </style>
+
+    <!-- Button -->
+    <style name="GameButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingLeft">10dp</item>
+        <item name="android:paddingRight">10dp</item>
+    </style>
+
+    <style name="MainScreenButton" parent="@style/GameButton">
+        <item name="android:layout_marginBottom">10dp</item>
+    </style>
+
+    <style name="SignInButton">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">40dp</item>
+    </style>
+
+    <style name="GameTitle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:text">@string/app_name</item>
+        <item name="android:layout_marginBottom">40dp</item>
+    </style>
+
+    <style name="Blurb">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="GameBlurb" parent="@style/Blurb">
+        <item name="android:layout_marginBottom">40dp</item>
+    </style>
+
 </resources>

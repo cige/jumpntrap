@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.jumpntrap.activity.MenuActivity">
+
+    <!-- Main screen -->
+    <LinearLayout
+        android:id="@+id/screen_main"
+        style="@style/LLScreen">
+        <Button
+            style="@style/MainScreenButton"
+            android:id="@+id/btn_one_player"
+            android:text="@string/one_player" />
+        <Button
+            style="@style/MainScreenButton"
+            android:id="@+id/btn_quick_game"
+            android:text="@string/quick_game" />
+    </LinearLayout>
+
+    <!-- SIGN-IN SCREEN -->
+    <LinearLayout
+        android:id="@+id/screen_sign_in"
+        style="@style/LLScreen">
+        <TextView
+            style="@style/GameTitle" />
+        <TextView
+            style="@style/GameBlurb" />
+
+        <Button
+            style="@style/MainScreenButton"
+            android:id="@+id/btn_one_player_2"
+            android:text="@string/one_player" />
+        <com.google.android.gms.common.SignInButton
+            style="@style/SignInButton"
+            android:id="@+id/btn_sign_in" />
+    </LinearLayout>
+
+    <!-- Wait screen -->
+    <LinearLayout android:id="@+id/screen_wait" style="@style/LLScreen">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/please_wait" />
+    </LinearLayout>
+</FrameLayout>
