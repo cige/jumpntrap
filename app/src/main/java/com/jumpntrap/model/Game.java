@@ -1,13 +1,5 @@
 package com.jumpntrap.model;
 
-import android.util.Log;
-
-import com.jumpntrap.model.Player;
-import com.jumpntrap.model.Direction;
-import com.jumpntrap.model.GameBoard;
-import com.jumpntrap.model.GameState;
-import com.jumpntrap.model.Position;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -45,7 +37,63 @@ public abstract class Game {
         return players;
     }
 
-    private void setPlayersPositions() {
+    public boolean isTileOccupied(Position position) {
+        for (Player player : getPlayers()) {
+            Position pos = player.getPosition();
+
+            if (pos != null && pos.equals(position)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private final Player nextPlayer(){
+        return players.get(turn);
+    }
+
+    public boolean boardContainsTile(Position pos) {
+        return gameBoard.containsTile(pos);
+    }
+
+    public void start() {
+        start(null,-1,null);
+    }
+
+    public void start(boolean[][] tiles,int turn,int[] positions) {
+
+        if(players.size() < nbPlayers)
+            throw new RuntimeException("The game require more players");
+
+        if(players.size() > nbPlayers)
+            throw new RuntimeException("Too many players in the game");
+
+        initGameBoard(tiles);
+        initPlayersPositions(positions);
+        toss(turn);
+
+        this.state = GameState.STARTED;
+        nextPlayer().actionRequired(this);
+
+    }
+
+    private void initGameBoard(boolean[][] tiles) {
+        gameBoard.init(tiles,nbPlayers);
+    }
+
+    private void initPlayersPositions(int[] positions) {
+
+        if(positions == null){
+            initRandomPlayersPositions();
+            return;
+        }
+
+        if(players.size() != positions.length * 2)
+            throw new RuntimeException("Invalid position set");
+    }
+
+    private void initRandomPlayersPositions() {
         final Random rand = new Random();
 
         // Place players with a random algorithm
@@ -64,44 +112,11 @@ public abstract class Game {
         }
     }
 
-    public boolean isTileOccupied(Position position) {
-        for (Player player : getPlayers()) {
-            Position pos = player.getPosition();
-
-            if (pos != null && pos.equals(position)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private final int toss(){
-        turn = (int)(Math.random() * nbPlayers);
-        return turn;
-    }
-
-    private final Player nextPlayer(){
-        return players.get(turn);
-    }
-
-    public boolean boardContainsTile(Position pos) {
-        return gameBoard.containsTile(pos);
-    }
-
-    public void start() {
-
-        if(players.size() < nbPlayers)
-            throw new RuntimeException("The game require more players");
-
-        if(players.size() > nbPlayers)
-            throw new RuntimeException("Too many players in the game");
-
-        setPlayersPositions();
-        toss();
-        this.state = GameState.STARTED;
-        nextPlayer().actionRequired(this);
-
+    private final int toss(int turn){
+        if(turn != -1)
+            return turn;
+        this.turn = (int)(Math.random() * nbPlayers);
+        return this.turn;
     }
 
     public void restart() {
@@ -111,9 +126,9 @@ public abstract class Game {
             p.resurrect();
         }
 
-        gameBoard.restart(nbPlayers);
+        gameBoard.init(nbPlayers);
 
-       start();
+        start();
     }
 
     /**
