@@ -1,7 +1,9 @@
 package com.jumpntrap.activity;
 
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+
+import com.jumpntrap.R;
 
 public class HelpActivity extends AppCompatActivity {
 

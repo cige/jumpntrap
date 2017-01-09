@@ -19,8 +19,8 @@
             android:text="@string/quick_game" />
         <Button
             style="@style/MainScreenButton"
-            android:id="@+id/btn_show_games"
-            android:text="@string/quick_game" />
+            android:id="@+id/btn_help"
+            android:text="@string/help" />
     </LinearLayout>
 
     <!-- SIGN-IN SCREEN -->
@@ -39,6 +39,10 @@
         <com.google.android.gms.common.SignInButton
             style="@style/SignInButton"
             android:id="@+id/btn_sign_in" />
+        <Button
+            style="@style/MainScreenButton"
+            android:id="@+id/btn_help_2"
+            android:text="@string/help" />
     </LinearLayout>
 
     <!-- Wait screen -->
