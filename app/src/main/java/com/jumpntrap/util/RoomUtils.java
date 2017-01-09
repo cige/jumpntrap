@@ -1,4 +1,4 @@
-package com.jumpntrap.model.util;
+package com.jumpntrap.util;
 
 import android.app.Activity;
 import android.content.Intent;

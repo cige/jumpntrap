@@ -25,7 +25,7 @@ import com.google.example.games.basegameutils.BaseGameUtils;
 import com.jumpntrap.R;
 import com.jumpntrap.model.Player;
 import com.jumpntrap.model.Game;
-import com.jumpntrap.model.util.RoomUtils;
+import com.jumpntrap.util.RoomUtils;
 import com.jumpntrap.view.GameView;
 
 import java.util.List;
