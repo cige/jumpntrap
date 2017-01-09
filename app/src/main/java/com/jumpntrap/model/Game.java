@@ -82,7 +82,7 @@ public abstract class Game {
         gameBoard.init(tiles,nbPlayers);
     }
 
-    private void initPlayersPositions(int[] positions) {
+    private void initPlayersPositions(int[] positions) { // positions = [ x1 , y1 , x2 , y2 ... ]
 
         if(positions == null){
             initRandomPlayersPositions();
@@ -91,6 +91,11 @@ public abstract class Game {
 
         if(players.size() != positions.length * 2)
             throw new RuntimeException("Invalid position set");
+
+        for(int i = 0; i < positions.length; i ++){
+            Position p = new Position(positions[i*2], positions[i*2 + 1]);
+            players.get(i).setPosition(p);
+        }
     }
 
     private void initRandomPlayersPositions() {
