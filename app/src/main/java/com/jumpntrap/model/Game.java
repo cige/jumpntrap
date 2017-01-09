@@ -10,8 +10,8 @@ import java.util.Random;
 
 public abstract class Game {
 
-    public final static int NB_COLUMNS = 4;
-    public final static int NB_LINES = 6;
+    public final static int NB_COLUMNS = 5;
+    public final static int NB_LINES = 9;
 
     private GameBoard gameBoard;
     private GameState state;
@@ -135,7 +135,7 @@ public abstract class Game {
      * A game isn't over if at least 2 players are still alive.
      * @return the winner of the game, if exists.
      */
-    public Player checkIsOver() {
+    public Player checkIsOver() { //TODO a bug something happens, a move is handled after the game is over. Check that.
 
         Player winner = null;
 
@@ -165,7 +165,7 @@ public abstract class Game {
 
     public final void handleMove(Direction direction, Player player){
 
-        if(player != nextPlayer())
+        if(player != nextPlayer()) // check if it's its turn else ignore the move
             return;
 
         player.playMove(this,direction);

@@ -25,7 +25,7 @@ public class GameBoard implements Serializable{
 
         for (int line = 0; line < nbLines; ++line) {
             for (int column = 0; column < nbColumns; ++column) {
-                if(Math.random() < density)
+                if(Math.random() < density) //TODO generate a playable board, No isolated tile for example, no disvantaged player
                     tiles[line][column] = true;
                 else
                     tiles[line][column] = false;

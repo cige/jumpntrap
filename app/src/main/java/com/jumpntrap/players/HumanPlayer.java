@@ -37,7 +37,7 @@ public class HumanPlayer extends Player implements OnTouchListener {
         this.game = game;
     }
 
-    private final class GestureListener extends SimpleOnGestureListener {
+    private final class GestureListener extends SimpleOnGestureListener { //TODO improve the gestureListener to make it more natural
 
         private static final int SWIPE_THRESHOLD = 100;
         private static final int SWIPE_VELOCITY_THRESHOLD = 100;
