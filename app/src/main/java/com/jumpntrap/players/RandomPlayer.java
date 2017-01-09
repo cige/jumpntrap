@@ -3,7 +3,7 @@ package com.jumpntrap.players;
 import com.jumpntrap.model.Player;
 import com.jumpntrap.model.Direction;
 import com.jumpntrap.model.Position;
-import com.jumpntrap.model.game.Game;
+import com.jumpntrap.model.Game;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,19 +15,16 @@ import java.util.Random;
 
 public class RandomPlayer extends Player {
 
-    private final Game game;
-
-    public RandomPlayer(Game game) {
-        this.game = game;
+    public RandomPlayer() {
     }
 
     @Override
-    public void actionRequired() {
-        Direction direction = chooseMove();
-        game.handleIAMove(direction,this);
+    public void actionRequired(Game game) {
+        Direction direction = chooseMove(game);
+        game.handleMove(direction,this);
     }
 
-    private final Direction chooseMove() {
+    private final Direction chooseMove(Game game) {
         List<Direction> directions = new ArrayList<>();
         // Get valid directions
         for (Direction direction : Direction.values()) {

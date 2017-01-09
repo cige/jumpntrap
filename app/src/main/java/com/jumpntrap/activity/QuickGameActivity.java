@@ -24,7 +24,7 @@ import com.google.example.games.basegameutils.BaseGameActivity;
 import com.google.example.games.basegameutils.BaseGameUtils;
 import com.jumpntrap.R;
 import com.jumpntrap.model.Player;
-import com.jumpntrap.model.game.Game;
+import com.jumpntrap.model.Game;
 import com.jumpntrap.model.util.RoomUtils;
 import com.jumpntrap.view.GameView;
 

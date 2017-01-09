@@ -9,7 +9,7 @@ import android.view.View.OnTouchListener;
 
 import com.jumpntrap.model.Player;
 import com.jumpntrap.model.Direction;
-import com.jumpntrap.model.game.Game;
+import com.jumpntrap.model.Game;
 
 /**
  * Based on: http://stackoverflow.com/questions/4139288/android-how-to-handle-right-to-left-swipe-gestures
@@ -17,20 +17,27 @@ import com.jumpntrap.model.game.Game;
 public class HumanPlayer extends Player implements OnTouchListener {
 
     private final GestureDetector gestureDetector;
-    private final Game game;
+    private Game game;
 
-    public HumanPlayer(Context context, Game game){
+    public HumanPlayer(Context context){
         super();
-        this.game = game;
+        game = null;
         gestureDetector = new GestureDetector(context, new GestureListener());
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
+        if(game == null)
+            return false;
         return gestureDetector.onTouchEvent(event);
     }
 
-    private final class GestureListener extends SimpleOnGestureListener {
+    @Override
+    public void actionRequired(Game game) {
+        this.game = game;
+    }
+
+    private final class GestureListener extends SimpleOnGestureListener { //TODO improve the gestureListener to make it more natural
 
         private static final int SWIPE_THRESHOLD = 100;
         private static final int SWIPE_VELOCITY_THRESHOLD = 100;
@@ -46,45 +53,77 @@ public class HumanPlayer extends Player implements OnTouchListener {
             try {
                 float diffY = e2.getY() - e1.getY();
                 float diffX = e2.getX() - e1.getX();
-                if (Math.abs(diffX) > Math.abs(diffY)) {
-                    if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                    if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
                         if (diffX > 0) {
-                            onSwipeRight();
+                            if (diffY > 0)
+                                onSwipeBottomRight();
+                            else
+                                onSwipeTopRight();
                         } else {
-                            onSwipeLeft();
+                            if (diffY > 0)
+                                onSwipeBottomLeft();
+                            else
+                                onSwipeTopLeft();
                         }
+                    } else {
+                        if (diffX > 0)
+                            onSwipeRight();
+                        else
+                            onSwipeLeft();
                     }
                     result = true;
                 }
                 else if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
-                    if (diffY > 0) {
+                    if (diffY > 0)
                         onSwipeBottom();
-                    } else {
+                    else
                         onSwipeTop();
-                    }
-                }
-                result = true;
 
-            } catch (Exception exception) {
-                exception.printStackTrace();
+                    result = true;
+                }
+
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+                return result;
             }
-            return result;
+        }
+
+        private void onSwipeRight() {
+            game.handleMove(Direction.E,this);
+        }
+
+        private void onSwipeLeft() {
+            game.handleMove(Direction.W,this);
+        }
+
+        private void onSwipeTop() {
+            game.handleMove(Direction.N,this);
+        }
+
+        private void onSwipeBottom() {
+            game.handleMove(Direction.S,this);
+        }
+
+        private void onSwipeTopRight() {
+            game.handleMove(Direction.NE,this);
+        }
+
+        private void onSwipeTopLeft() {
+            game.handleMove(Direction.NW,this);
+        }
+
+        private void onSwipeBottomRight() {
+            game.handleMove(Direction.SE,this);
+        }
+
+        private void onSwipeBottomLeft() {
+            game.handleMove(Direction.SW,this);
+        }
+
+        @Override
+        public boolean isMainPlayer() {
+            return true;
         }
     }
-
-    private void onSwipeRight() {
-        game.handleHumanMove(Direction.E,this);
-    }
-
-    private void onSwipeLeft() {
-        game.handleHumanMove(Direction.W,this);
-    }
-
-    private void onSwipeTop() {
-        game.handleHumanMove(Direction.N,this);
-    }
-
-    private void onSwipeBottom() {
-        game.handleHumanMove(Direction.S,this);
-    }
-}
