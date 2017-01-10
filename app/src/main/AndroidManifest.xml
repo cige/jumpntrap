@@ -34,9 +34,6 @@
         <activity
             android:name=".activity.HelpActivity"
             android:screenOrientation="sensorPortrait"/>
-        <activity
-            android:name=".activity.ComputerVsComputerActivity"
-            android:screenOrientation="sensorPortrait"/>
     </application>
 
 </manifest>

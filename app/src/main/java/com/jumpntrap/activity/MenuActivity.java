@@ -72,7 +72,7 @@ public class MenuActivity extends BaseGameActivity implements
     }
 
     private void startOnePlayerActivity() {
-        startActivity(new Intent(this, RandomVSHumanGameActivity.class));
+        startActivity(new Intent(this, HumanVSComputerActivity.class));
     }
 
     private void startHelpActivity() {
