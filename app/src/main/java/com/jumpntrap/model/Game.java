@@ -170,7 +170,7 @@ public abstract class Game {
      * A game isn't over if at least 2 players are still alive.
      * @return the winner of the game, if exists.
      */
-    public void checkIsOver() { //TODO a bug something happens, a move is handled after the game is over. Check that.
+    public void checkIsOver() {
 
         Player winner = null;
 
