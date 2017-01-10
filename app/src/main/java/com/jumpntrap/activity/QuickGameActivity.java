@@ -41,7 +41,6 @@ public class QuickGameActivity extends GameActivity implements
     private String roomId;
 
     private RemotePlayer remotePlayer = null;
-    private Object isGameInit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +51,6 @@ public class QuickGameActivity extends GameActivity implements
                 .addOnConnectionFailedListener(this)
                 .addApi(Games.API).addScope(Games.SCOPE_GAMES)
                 .build();
-
-        isGameInit = new Object();
 
         if (!googleApiClient.isConnected()) {
             Log.d(TAG, "Connecting client.");
@@ -115,22 +112,23 @@ public class QuickGameActivity extends GameActivity implements
         // Take 1st player as host
         final Participant participant = participants.get(0);
         final boolean isHost = myId.equals(participant.getParticipantId());
-        synchronized (isGameInit) {
-            if (isHost) {
-                remotePlayer = new RemotePlayer(googleApiClient, roomId, participants.get(1).getParticipantId());
-                game = new OneVSOneGame(humanPlayer, remotePlayer);
-            } else {
-                remotePlayer = new RemotePlayer(googleApiClient, roomId, participants.get(0).getParticipantId());
-                remotePlayer.setHost(true);
-                game = new OneVSOneGame(remotePlayer, humanPlayer, false);
-            }
-            game.addObserver(remotePlayer);
-            setGame(game);
 
-            game.start();
-            this.setOnTouchListener(humanPlayer);
+        if (isHost) {
+            remotePlayer = new RemotePlayer(googleApiClient, roomId, participants.get(1).getParticipantId());
+            game = new OneVSOneGame(humanPlayer, remotePlayer);
+        } else {
+            remotePlayer = new RemotePlayer(googleApiClient, roomId, participants.get(0).getParticipantId());
+            remotePlayer.setHost(true);
+            game = new OneVSOneGame(remotePlayer, humanPlayer, false);
+        }
+        game.addObserver(remotePlayer);
+        setGame(game);
 
-            isGameInit.notify();
+        game.start();
+        this.setOnTouchListener(humanPlayer);
+
+        synchronized (this) {
+            notify();
         }
     }
 
@@ -145,7 +143,8 @@ public class QuickGameActivity extends GameActivity implements
         Log.d(TAG, "onRealTimeMessageReceived");
 
         byte[] buff = realTimeMessage.getMessageData();
-        synchronized (isGameInit) {
+        // TODO : NEED TO FIX, sometimes it does not work
+        synchronized (this) {
             while (getGame() == null) {
                 try {
                     this.wait();
