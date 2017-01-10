@@ -72,7 +72,7 @@ public abstract class Game {
     }
 
     public void start() {
-        if (!isHost) {
+        if (isHost) {
             start(null, -1, null);
         }
     }

@@ -43,6 +43,7 @@ public final class RemotePlayer extends Player implements GameObserver {
         if (isHost)
             return;
 
+        Log.d(TAG, "onGameStarted : sendMessage");
         GameConfigMessage gdm = new GameConfigMessage(game);
         byte[] buff = SerializationUtils.serialize(gdm);
         Games.RealTimeMultiplayer.sendUnreliableMessage(googleApiClient, buff, roomId, destId);
@@ -50,8 +51,12 @@ public final class RemotePlayer extends Player implements GameObserver {
 
     @Override
     public void onMovedPlayed(Game game, Player player, Direction move) {
+        Log.d(TAG, "onMovedPlayed");
+
         if(player == this)
             return;
+
+        Log.d(TAG, "onMovedPlayed : sendMessage");
 
         MoveMessage mm = new MoveMessage(move);
         byte[] buff = SerializationUtils.serialize(mm);
@@ -60,6 +65,8 @@ public final class RemotePlayer extends Player implements GameObserver {
 
     @Override
     public void onGameOver(Game game, Player winner) {
+        Log.d(TAG, "onGameOver");
+
 
     }
 
@@ -68,20 +75,25 @@ public final class RemotePlayer extends Player implements GameObserver {
     }
 
     public void handleRealTimeMessageReceived(Game game, byte[] buff) {
+        Log.d(TAG, "handleRealTimeMessageReceived");
+
         switch (game.getGameState()) {
             // We have to init the game
             case INITIAL:
+                Log.d(TAG, "INITIAL");
                 // TODO : HANDLE WHEN THE MESSAGE IS "INVALID"
                 final GameConfigMessage gcm = SerializationUtils.deserialize(buff);
                 game.start(gcm.getTiles(), gcm.getTurn(), gcm.getPositions());
                 break;
 
             case STARTED:
+                Log.d(TAG, "STARTED");
                 final MoveMessage mm = SerializationUtils.deserialize(buff);
                 game.handleMove(mm.getDirection(), this);
                 break;
 
             case GAMEOVER:
+                Log.d(TAG, "GAMEOVER");
                 final GameConfigMessage gcm2 = SerializationUtils.deserialize(buff);
                 game.start(gcm2.getTiles(), gcm2.getTurn(), gcm2.getPositions());
                 break;
