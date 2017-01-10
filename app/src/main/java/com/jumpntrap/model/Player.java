@@ -4,7 +4,7 @@ public abstract class Player {
 
     private Position position;
     private boolean isDead;
-    private Game game;
+    protected Game game;
 
     public Player() {
         isDead = false;

@@ -7,9 +7,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
-import com.jumpntrap.model.Player;
 import com.jumpntrap.model.Direction;
-import com.jumpntrap.model.Game;
+import com.jumpntrap.model.Player;
 
 /**
  * Based on: http://stackoverflow.com/questions/4139288/android-how-to-handle-right-to-left-swipe-gestures
@@ -17,7 +16,6 @@ import com.jumpntrap.model.Game;
 public class HumanPlayer extends Player implements OnTouchListener {
 
     private final GestureDetector gestureDetector;
-    private Game game;
 
     public HumanPlayer(Context context){
         super();
