@@ -42,6 +42,8 @@ public class QuickGameActivity extends GameActivity implements
 
     private RemotePlayer remotePlayer = null;
 
+    private Object isGameInitialisedLock = new Object(); //TODO review the lock system
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,32 +105,34 @@ public class QuickGameActivity extends GameActivity implements
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void initGame() {
-        Log.d(TAG, "initGame");
+    private void initGame(){
 
-        HumanPlayer humanPlayer = new HumanPlayer(this);
-        OneVSOneGame game = null;
+        synchronized (isGameInitialisedLock) {
+            Log.d(TAG, "initGame");
 
-        // Take 1st player as host
-        final Participant participant = participants.get(0);
-        final boolean isHost = myId.equals(participant.getParticipantId());
+            HumanPlayer humanPlayer = new HumanPlayer(this);
+            OneVSOneGame game = null;
 
-        if (isHost) {
-            remotePlayer = new RemotePlayer(googleApiClient, roomId, participants.get(1).getParticipantId());
-            game = new OneVSOneGame(humanPlayer, remotePlayer);
-        } else {
-            remotePlayer = new RemotePlayer(googleApiClient, roomId, participants.get(0).getParticipantId());
-            remotePlayer.setHost(true);
-            game = new OneVSOneGame(remotePlayer, humanPlayer, false);
-        }
-        game.addObserver(remotePlayer);
-        setGame(game);
+            // Take 1st player as host
+            final Participant participant = participants.get(0);
+            final boolean isHost = myId.equals(participant.getParticipantId());
 
-        game.start();
-        this.setOnTouchListener(humanPlayer);
+            if (isHost) {
+                remotePlayer = new RemotePlayer(googleApiClient, roomId, participants.get(1).getParticipantId());
+                game = new OneVSOneGame(humanPlayer, remotePlayer);
+            } else {
+                remotePlayer = new RemotePlayer(googleApiClient, roomId, participants.get(0).getParticipantId());
+                remotePlayer.setHost(true);
+                game = new OneVSOneGame(remotePlayer, humanPlayer, false);
+            }
+            game.addObserver(remotePlayer);
+            setGame(game);
 
-        synchronized (this) {
-            notify();
+            game.start();
+            this.setOnTouchListener(humanPlayer);
+
+
+            isGameInitialisedLock.notify();
         }
     }
 
@@ -144,15 +148,17 @@ public class QuickGameActivity extends GameActivity implements
 
         byte[] buff = realTimeMessage.getMessageData();
         // TODO : NEED TO FIX, sometimes it does not work
-        synchronized (this) {
+
             while (getGame() == null) {
-                try {
-                    this.wait();
-                }
-                catch (InterruptedException e) {
+                synchronized (isGameInitialisedLock) {
+                    try {
+                        isGameInitialisedLock.wait();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
-        }
+
         remotePlayer.handleRealTimeMessageReceived(getGame(), buff);
     }
 
