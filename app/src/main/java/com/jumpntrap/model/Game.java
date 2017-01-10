@@ -153,15 +153,11 @@ public abstract class Game {
     }
 
     public void restart() {
-        if (!isHost)
-            return;
 
         for(Player p: getPlayers()) {
             p.setPosition(null);
             p.resurrect();
         }
-
-        gameBoard.init(nbPlayers);
 
         start();
     }
