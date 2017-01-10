@@ -5,17 +5,14 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
-import com.jumpntrap.model.OneVSOneGame;
-import com.jumpntrap.model.Player;
 import com.jumpntrap.model.Game;
 import com.jumpntrap.model.GameBoard;
+import com.jumpntrap.model.OneVSOneGame;
+import com.jumpntrap.model.Player;
 import com.jumpntrap.model.Position;
-
-import java.util.Random;
 
 // SurfaceView est une surface de dessin.
 // référence : http://developer.android.com/reference/android/view/SurfaceView.html
@@ -30,7 +27,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     private int tileLength;
 
     // création de la surface de dessin
-    public GameView(Context context, Game game) {
+    public GameView(Context context) {
         super(context);
         getHolder().addCallback(this);
         gameLoopThread = new GameLoopThread(this);
@@ -42,7 +39,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     // Fonction qui "dessine" un écran de jeu
     public void doDraw(Canvas canvas) {
 
-        if(game == null)
+        if(game == null || game.isStateInitial())
             return;
 
         if (canvas == null) {
@@ -59,13 +56,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private void drawBoard(Canvas canvas) { //TODO fulfill the screen
 
-        if(game == null)
-            return;
-
         int lineCursor = 0;
         int columnCursor;
 
-        Random rand = new Random();
         Paint p = new Paint();
         p.setColor(Color.GRAY);
 

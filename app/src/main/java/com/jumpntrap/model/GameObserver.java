@@ -7,7 +7,7 @@ package com.jumpntrap.model;
 public interface GameObserver {
 
     public void onGameStarted(Game game);
-
+    public void onMovedPlayed(Game game, Player player, Direction move);
     public void onGameOver(Game game, Player winner);
 
 }

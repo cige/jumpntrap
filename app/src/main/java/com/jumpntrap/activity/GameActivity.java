@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jumpntrap.R;
+import com.jumpntrap.model.Direction;
 import com.jumpntrap.model.Game;
 import com.jumpntrap.model.GameObserver;
 import com.jumpntrap.model.OneVSOneGame;
@@ -31,7 +32,7 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
 
         this.setContentView(R.layout.game);
 
-        view = new GameView(this,game);
+        view = new GameView(this);
         LinearLayout boardLayout = (LinearLayout)findViewById(R.id.board);
         boardLayout.addView(view, ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
 
@@ -41,6 +42,10 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
         this.game = game;
         game.addObserver(this);
         view.setGame(game);
+    }
+
+    Game getGame() {
+        return game;
     }
 
     void startGame(){
@@ -83,6 +88,11 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
 
     @Override
     public void onGameStarted(Game game) {
+
+    }
+
+    @Override
+    public void onMovedPlayed(Game game, Player player, Direction move) {
 
     }
 }

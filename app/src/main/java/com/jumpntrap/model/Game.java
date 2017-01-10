@@ -11,7 +11,7 @@ import java.util.Random;
 public abstract class Game {
 
     public final static int NB_COLUMNS = 5;
-    public final static int NB_LINES = 9;
+    public final static int NB_LINES = 6;
 
     private GameBoard gameBoard;
     private GameState state;
@@ -101,10 +101,10 @@ public abstract class Game {
             return;
         }
 
-        if(players.size() != positions.length * 2)
+        if(players.size() * 2 != positions.length)
             throw new RuntimeException("Invalid position set");
 
-        for(int i = 0; i < positions.length; i ++){
+        for(int i = 0; i < players.size(); i ++){
             Position p = new Position(positions[i*2], positions[i*2 + 1]);
             players.get(i).setPosition(p);
         }
@@ -134,6 +134,10 @@ public abstract class Game {
             return turn;
         this.turn = (int)(Math.random() * nbPlayers);
         return this.turn;
+    }
+
+    public int getTurn() {
+        return turn;
     }
 
     public void restart() {
@@ -188,6 +192,9 @@ public abstract class Game {
             return;
 
         player.playMove(this,direction);
+        for (GameObserver go : observers) {
+            go.onMovedPlayed(this, player, direction);
+        }
         checkIsOver();
         turn = (turn + 1) % nbPlayers;
 
@@ -240,6 +247,10 @@ public abstract class Game {
         }
 
         return builder.toString();
+    }
+
+    public boolean isStateInitial() {
+        return state == GameState.INITIAL;
     }
 
 }

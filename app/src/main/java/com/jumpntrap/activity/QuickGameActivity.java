@@ -20,22 +20,16 @@ import com.google.android.gms.games.multiplayer.realtime.Room;
 import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
 import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListener;
 import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
-import com.google.example.games.basegameutils.BaseGameActivity;
 import com.google.example.games.basegameutils.BaseGameUtils;
 import com.jumpntrap.R;
-import com.jumpntrap.model.Game;
 import com.jumpntrap.model.OneVSOneGame;
 import com.jumpntrap.players.HumanPlayer;
 import com.jumpntrap.players.RemotePlayer;
-import com.jumpntrap.realtime.GameDataMessage;
 import com.jumpntrap.util.RoomUtils;
-import com.jumpntrap.view.GameView;
-
-import org.apache.commons.lang3.SerializationUtils;
 
 import java.util.List;
 
-public class QuickGameActivity extends BaseGameActivity implements
+public class QuickGameActivity extends GameActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         RoomUpdateListener, RoomStatusUpdateListener, RealTimeMessageReceivedListener {
     private static final String TAG = "QuickGameActivity";
@@ -46,18 +40,20 @@ public class QuickGameActivity extends BaseGameActivity implements
     private String myId;
     private String roomId;
 
-    private Game game;
-    private HumanPlayer humanPlayer;
-    private RemotePlayer remotePlayer;
-    private GameView gameView;
+    private RemotePlayer remotePlayer = null;
+    private Object isGameInit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        googleApiClient = getApiClient();
-        googleApiClient.registerConnectionCallbacks(this);
-        googleApiClient.registerConnectionFailedListener(this);
+        googleApiClient =  new GoogleApiClient.Builder(this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(Games.API).addScope(Games.SCOPE_GAMES)
+                .build();
+
+        isGameInit = new Object();
 
         if (!googleApiClient.isConnected()) {
             Log.d(TAG, "Connecting client.");
@@ -66,16 +62,6 @@ public class QuickGameActivity extends BaseGameActivity implements
         else {
             Log.w(TAG, "GameHelper: client was already connected on onStart()");
         }
-    }
-
-    @Override
-    public void onSignInFailed() {
-
-    }
-
-    @Override
-    public void onSignInSucceeded() {
-
     }
 
     private void createQuickMatch() {
@@ -103,7 +89,7 @@ public class QuickGameActivity extends BaseGameActivity implements
                 if (resultCode == Activity.RESULT_OK) {
                     // ready to start playing
                     Log.d(TAG, "Starting game");
-                    startGame();
+                    initGame();
                 }
                 else if (resultCode == GamesActivityResultCodes.RESULT_LEFT_ROOM) {
                     // player indicated that they want to leave the room
@@ -120,17 +106,34 @@ public class QuickGameActivity extends BaseGameActivity implements
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void startGame() {
-        Log.d(TAG, "startGame");
+    private void initGame() {
+        Log.d(TAG, "initGame");
 
+        HumanPlayer humanPlayer = new HumanPlayer(this);
+        OneVSOneGame game = null;
+
+        // Take 1st player as host
         final Participant participant = participants.get(0);
-        if (myId.equals(participant.getParticipantId())) {
+        final boolean isHost = myId.equals(participant.getParticipantId());
+        if (isHost) {
+            remotePlayer = new RemotePlayer(googleApiClient, roomId, participants.get(1).getParticipantId());
             game = new OneVSOneGame(humanPlayer, remotePlayer);
-           // byte[] mMsgBuf = new byte[1];
-           // mMsgBuf[0] = 'A';
-            GameDataMessage gdm = new GameDataMessage();
-            byte[] mMsgBuf = SerializationUtils.serialize(gdm);
-            Games.RealTimeMultiplayer.sendUnreliableMessage(googleApiClient, mMsgBuf, roomId, participants.get(1).getParticipantId());
+        } else {
+            remotePlayer = new RemotePlayer(googleApiClient, roomId, participants.get(0).getParticipantId());
+            remotePlayer.setHost(true);
+            game = new OneVSOneGame(remotePlayer, humanPlayer);
+        }
+        game.addObserver(remotePlayer);
+        setGame(game);
+
+        if (isHost) {
+            game.start();
+        }
+
+        this.setOnTouchListener(humanPlayer);
+
+        synchronized (isGameInit) {
+            isGameInit.notify();
         }
     }
 
@@ -144,12 +147,17 @@ public class QuickGameActivity extends BaseGameActivity implements
     public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
         Log.d(TAG, "onRealTimeMessageReceived");
 
-        byte[] gdmBytes = realTimeMessage.getMessageData();
-        GameDataMessage gdm = SerializationUtils.deserialize(gdmBytes);
-        int[] positions = gdm.getPositions();
-        for (int value : positions) {
-            Log.d(TAG, "RECEIVED : " + value);
+        byte[] buff = realTimeMessage.getMessageData();
+        synchronized (isGameInit) {
+            while (getGame() == null) {
+                try {
+                    this.wait();
+                }
+                catch (InterruptedException e) {
+                }
+            }
         }
+        remotePlayer.handleRealTimeMessageReceived(getGame(), buff);
     }
 
     @Override

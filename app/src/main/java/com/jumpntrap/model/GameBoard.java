@@ -1,12 +1,10 @@
 package com.jumpntrap.model;
 
-import java.io.Serializable;
-
 /**
  * Created by Victor on 13/12/2016.
  */
 
-public class GameBoard implements Serializable{
+public class GameBoard {
 
     private final static double DENSITY = 0.85;
     private boolean[][] tiles;
@@ -80,7 +78,7 @@ public class GameBoard implements Serializable{
         }
     }
 
-    boolean[][] serialize(){
+    public boolean[][] serialize(){
         return tiles.clone();
     }
 

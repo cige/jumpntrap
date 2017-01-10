@@ -35,6 +35,11 @@ public final class OneVSOneGame extends Game implements GameObserver{
     }
 
     @Override
+    public void onMovedPlayed(Game game, Player player, Direction move) {
+
+    }
+
+    @Override
     public void onGameOver(Game game,Player winner) {
         if(winner == player1)
             player1Score ++;
