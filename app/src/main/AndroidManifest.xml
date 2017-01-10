@@ -17,16 +17,26 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <activity android:name=".activity.RandomVSHumanGameActivity" />
-        <activity android:name=".activity.MenuActivity">
+        <activity
+            android:name=".activity.MenuActivity"
+            android:screenOrientation="sensorPortrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name=".activity.QuickGameActivity" />
-        <activity android:name=".activity.HelpActivity" />
+            </activity>
+        <activity
+            android:name=".activity.HumanVSComputerActivity"
+            android:screenOrientation="sensorPortrait" />
+        <activity
+            android:name=".activity.QuickGameActivity"
+            android:screenOrientation="sensorPortrait"/>
+        <activity
+            android:name=".activity.HelpActivity"
+            android:screenOrientation="sensorPortrait"/>
+        <activity
+            android:name=".activity.ComputerVsComputerActivity"
+            android:screenOrientation="sensorPortrait"/>
     </application>
 
 </manifest>
