@@ -84,13 +84,17 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         for(Player player: game.getPlayers()){
 
+            Position pos = player.getPosition();
+            if(pos == null)
+                continue;
+
             if(player.isMainPlayer())
                 p.setColor(Color.BLUE);
             else
                 p.setColor(Color.RED);
 
             if(player.isAlive()) {
-                canvas.drawCircle(tileLength*player.getPosition().getColumn()+ radius,tileLength*player.getPosition().getLine()+ radius, radius,p);
+                canvas.drawCircle(tileLength*pos.getColumn()+ radius,tileLength*pos.getLine()+ radius, radius,p);
             }
         }
     }
