@@ -140,8 +140,10 @@ public abstract class Game {
     }
 
     private final int toss(int turn){
-        if(turn != -1)
+        if(turn != -1) {
+            this.turn = turn;
             return turn;
+        }
         this.turn = (int)(Math.random() * nbPlayers);
         return this.turn;
     }
