@@ -8,6 +8,6 @@ public interface GameObserver {
 
     public void onGameStarted(Game game);
 
-    public void onGameOver(Game game,Player winner);
+    public void onGameOver(Game game);
 
 }
