@@ -23,10 +23,15 @@ import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
 import com.google.example.games.basegameutils.BaseGameActivity;
 import com.google.example.games.basegameutils.BaseGameUtils;
 import com.jumpntrap.R;
-import com.jumpntrap.model.Player;
 import com.jumpntrap.model.Game;
+import com.jumpntrap.model.OneVSOneGame;
+import com.jumpntrap.players.HumanPlayer;
+import com.jumpntrap.players.RemotePlayer;
+import com.jumpntrap.realtime.GameDataMessage;
 import com.jumpntrap.util.RoomUtils;
 import com.jumpntrap.view.GameView;
+
+import org.apache.commons.lang3.SerializationUtils;
 
 import java.util.List;
 
@@ -42,8 +47,8 @@ public class QuickGameActivity extends BaseGameActivity implements
     private String roomId;
 
     private Game game;
-    private Player playerOne;
-    private Player playerTwo;
+    private HumanPlayer humanPlayer;
+    private RemotePlayer remotePlayer;
     private GameView gameView;
 
     @Override
@@ -119,12 +124,12 @@ public class QuickGameActivity extends BaseGameActivity implements
         Log.d(TAG, "startGame");
 
         final Participant participant = participants.get(0);
-
-        Log.d(TAG, myId + " -- " + participant.getParticipantId());
         if (myId.equals(participant.getParticipantId())) {
-            //game = new HumanVSRemoteGame();
-            byte[] mMsgBuf = new byte[1];
-            mMsgBuf[0] = 'A';
+            game = new OneVSOneGame(humanPlayer, remotePlayer);
+           // byte[] mMsgBuf = new byte[1];
+           // mMsgBuf[0] = 'A';
+            GameDataMessage gdm = new GameDataMessage();
+            byte[] mMsgBuf = SerializationUtils.serialize(gdm);
             Games.RealTimeMultiplayer.sendUnreliableMessage(googleApiClient, mMsgBuf, roomId, participants.get(1).getParticipantId());
         }
     }
@@ -139,7 +144,12 @@ public class QuickGameActivity extends BaseGameActivity implements
     public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
         Log.d(TAG, "onRealTimeMessageReceived");
 
-        Log.d(TAG, "RECEIVED : " + new String(realTimeMessage.getMessageData()));
+        byte[] gdmBytes = realTimeMessage.getMessageData();
+        GameDataMessage gdm = SerializationUtils.deserialize(gdmBytes);
+        int[] positions = gdm.getPositions();
+        for (int value : positions) {
+            Log.d(TAG, "RECEIVED : " + value);
+        }
     }
 
     @Override
