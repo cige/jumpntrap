@@ -19,6 +19,8 @@ public abstract class Game {
     final int nbPlayers;
     final List<Player> players;
 
+    final List<GameObserver> observers;
+
     private int turn;
 
     public Game(int nbPlayers) {
@@ -26,6 +28,7 @@ public abstract class Game {
         this.nbPlayers = nbPlayers;
         gameBoard = new GameBoard(NB_LINES, NB_COLUMNS,nbPlayers);
         players = new ArrayList<>();
+        observers = new ArrayList<>();
         state = GameState.INITIAL;
     }
 
@@ -35,6 +38,10 @@ public abstract class Game {
 
     public List<Player> getPlayers(){
         return players;
+    }
+
+    public final void addObserver(GameObserver observer){
+        observers.add(observer);
     }
 
     public boolean isTileOccupied(Position position) {
@@ -74,6 +81,11 @@ public abstract class Game {
         toss(turn);
 
         this.state = GameState.STARTED;
+
+        for(GameObserver obs:observers){
+            obs.onGameStarted(this);
+        }
+
         nextPlayer().actionRequired(this);
 
     }
@@ -140,7 +152,7 @@ public abstract class Game {
      * A game isn't over if at least 2 players are still alive.
      * @return the winner of the game, if exists.
      */
-    public Player checkIsOver() { //TODO a bug something happens, a move is handled after the game is over. Check that.
+    public void checkIsOver() { //TODO a bug something happens, a move is handled after the game is over. Check that.
 
         Player winner = null;
 
@@ -149,15 +161,14 @@ public abstract class Game {
             if (player.isAlive()) {
 
                 if (winner != null){
-                    return null;
+                    return;
                 }
                 winner = player;
             }
 
         }
 
-        this.state = GameState.GAMEOVER;
-        return winner;
+        gameOver(winner);
     }
 
     public final void dropTile(Position position) {
@@ -170,14 +181,25 @@ public abstract class Game {
 
     public final void handleMove(Direction direction, Player player){
 
+        if(isOver())
+            return;
+
         if(player != nextPlayer()) // check if it's its turn else ignore the move
             return;
 
         player.playMove(this,direction);
+        checkIsOver();
         turn = (turn + 1) % nbPlayers;
 
         if(!isOver())
             nextPlayer().actionRequired(this);
+    }
+
+    private final void gameOver(Player winner){
+        this.state = GameState.GAMEOVER;
+        for(GameObserver observer:observers){
+            observer.onGameOver(this,winner);
+        }
     }
 
     final boolean isOver(){

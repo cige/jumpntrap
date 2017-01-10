@@ -36,7 +36,6 @@ public abstract class Player {
         }
 
         isDead = true;
-        game.checkIsOver();
     }
 
     public abstract void actionRequired(Game game);

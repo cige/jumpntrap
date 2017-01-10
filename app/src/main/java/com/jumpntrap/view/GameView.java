@@ -9,6 +9,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.jumpntrap.model.OneVSOneGame;
 import com.jumpntrap.model.Player;
 import com.jumpntrap.model.Game;
 import com.jumpntrap.model.GameBoard;
@@ -21,8 +22,8 @@ import java.util.Random;
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private GameLoopThread gameLoopThread;
-    private final Game game;
-    private final GameBoard board;
+    private Game game;
+    private GameBoard board;
     private final int nbLines,nbColumns;
 
     // Dimensions
@@ -34,14 +35,15 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         getHolder().addCallback(this);
         gameLoopThread = new GameLoopThread(this);
 
-        this.game = game;
-        this.board = game.getGameBoard();
         this.nbLines = Game.NB_LINES;
         this.nbColumns = Game.NB_COLUMNS;
     }
 
     // Fonction qui "dessine" un écran de jeu
     public void doDraw(Canvas canvas) {
+
+        if(game == null)
+            return;
 
         if (canvas == null) {
             return;
@@ -55,7 +57,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     }
 
-    private void drawBoard(Canvas canvas) {
+    private void drawBoard(Canvas canvas) { //TODO fulfill the screen
+
+        if(game == null)
+            return;
 
         int lineCursor = 0;
         int columnCursor;
@@ -124,12 +129,6 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    // Gère les touchés sur l'écran
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return true;  // On retourne "true" pour indiquer qu'on a géré l'évènement
-    }
-
     // Fonction obligatoire de l'objet SurfaceView
     // Fonction appelée à la CREATION et MODIFICATION et ONRESUME de l'écran
     // nous obtenons ici la largeur/hauteur de l'écran en pixels
@@ -142,5 +141,10 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         int maxScreen = w > h ? w : h;
         int maxBoard = nbLines > nbColumns ? nbLines : nbColumns;
         this.tileLength =  maxScreen / maxBoard;
+    }
+
+    public void setGame(OneVSOneGame game) {
+        this.game = game;
+        this.board = game.getGameBoard();
     }
 }// class GameView
