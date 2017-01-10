@@ -40,7 +40,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     // Fonction qui "dessine" un écran de jeu
     public void doDraw(Canvas canvas) {
 
-        if(game == null || game.getGameState() == GameState.INITIAL)
+        if(game == null || game.getGameState() != GameState.STARTED)
             return;
 
         if (canvas == null) {

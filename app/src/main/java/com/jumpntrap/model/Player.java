@@ -4,10 +4,15 @@ public abstract class Player {
 
     private Position position;
     private boolean isDead;
+    private Game game;
 
     public Player() {
         isDead = false;
         this.position = null;
+    }
+
+    public void setGame(Game game) {
+        this.game = game;
     }
 
     public final void setPosition(Position pos) {
@@ -38,7 +43,8 @@ public abstract class Player {
         isDead = true;
     }
 
-    public abstract void actionRequired(Game game);
+    public void actionRequired(Game game) {
+    }
 
     public boolean isMainPlayer(){
         return false;

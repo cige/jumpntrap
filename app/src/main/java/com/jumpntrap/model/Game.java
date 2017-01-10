@@ -41,6 +41,7 @@ public abstract class Game {
 
     final void addPlayer(Player player){
         players.add(player);
+        player.setGame(this);
     }
 
     public List<Player> getPlayers(){

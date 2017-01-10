@@ -34,10 +34,6 @@ public final class RemotePlayer extends Player implements GameObserver {
     }
 
     @Override
-    public void actionRequired(Game game) {
-    }
-
-    @Override
     public void onGameStarted(Game game) {
         Log.d(TAG, "onGameStarted");
         if (isHost)

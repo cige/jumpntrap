@@ -32,11 +32,6 @@ public class HumanPlayer extends Player implements OnTouchListener {
         return gestureDetector.onTouchEvent(event);
     }
 
-    @Override
-    public void actionRequired(Game game) {
-        this.game = game;
-    }
-
     private final class GestureListener extends SimpleOnGestureListener { //TODO improve the gestureListener to make it more natural
 
         private static final int SWIPE_THRESHOLD = 100;
