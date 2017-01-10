@@ -115,24 +115,21 @@ public class QuickGameActivity extends GameActivity implements
         // Take 1st player as host
         final Participant participant = participants.get(0);
         final boolean isHost = myId.equals(participant.getParticipantId());
-        if (isHost) {
-            remotePlayer = new RemotePlayer(googleApiClient, roomId, participants.get(1).getParticipantId());
-            game = new OneVSOneGame(humanPlayer, remotePlayer);
-        } else {
-            remotePlayer = new RemotePlayer(googleApiClient, roomId, participants.get(0).getParticipantId());
-            remotePlayer.setHost(true);
-            game = new OneVSOneGame(remotePlayer, humanPlayer);
-        }
-        game.addObserver(remotePlayer);
-        setGame(game);
-
-        if (isHost) {
-            game.start();
-        }
-
-        this.setOnTouchListener(humanPlayer);
-
         synchronized (isGameInit) {
+            if (isHost) {
+                remotePlayer = new RemotePlayer(googleApiClient, roomId, participants.get(1).getParticipantId());
+                game = new OneVSOneGame(humanPlayer, remotePlayer);
+            } else {
+                remotePlayer = new RemotePlayer(googleApiClient, roomId, participants.get(0).getParticipantId());
+                remotePlayer.setHost(true);
+                game = new OneVSOneGame(remotePlayer, humanPlayer, false);
+            }
+            game.addObserver(remotePlayer);
+            setGame(game);
+
+            game.start();
+            this.setOnTouchListener(humanPlayer);
+
             isGameInit.notify();
         }
     }

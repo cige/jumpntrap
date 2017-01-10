@@ -10,6 +10,7 @@ import android.view.SurfaceView;
 
 import com.jumpntrap.model.Game;
 import com.jumpntrap.model.GameBoard;
+import com.jumpntrap.model.GameState;
 import com.jumpntrap.model.OneVSOneGame;
 import com.jumpntrap.model.Player;
 import com.jumpntrap.model.Position;
@@ -39,7 +40,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     // Fonction qui "dessine" un écran de jeu
     public void doDraw(Canvas canvas) {
 
-        if(game == null || game.isStateInitial())
+        if(game == null || game.getGameState() == GameState.INITIAL)
             return;
 
         if (canvas == null) {

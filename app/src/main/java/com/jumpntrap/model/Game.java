@@ -11,7 +11,7 @@ import java.util.Random;
 public abstract class Game {
 
     public final static int NB_COLUMNS = 5;
-    public final static int NB_LINES = 6;
+    public final static int NB_LINES = 7;
 
     private GameBoard gameBoard;
     private GameState state;
@@ -22,6 +22,7 @@ public abstract class Game {
     final List<GameObserver> observers;
 
     private int turn;
+    private boolean isHost;
 
     public Game(int nbPlayers) {
 
@@ -30,6 +31,12 @@ public abstract class Game {
         players = new ArrayList<>();
         observers = new ArrayList<>();
         state = GameState.INITIAL;
+        isHost = true;
+    }
+
+    public Game(int nbPlayers, boolean host) {
+       this(nbPlayers);
+        isHost = host;
     }
 
     final void addPlayer(Player player){
@@ -65,7 +72,9 @@ public abstract class Game {
     }
 
     public void start() {
-        start(null,-1,null);
+        if (!isHost) {
+            start(null, -1, null);
+        }
     }
 
     public void start(boolean[][] tiles,int turn,int[] positions) {
@@ -141,6 +150,8 @@ public abstract class Game {
     }
 
     public void restart() {
+        if (!isHost)
+            return;
 
         for(Player p: getPlayers()) {
             p.setPosition(null);
@@ -249,8 +260,7 @@ public abstract class Game {
         return builder.toString();
     }
 
-    public boolean isStateInitial() {
-        return state == GameState.INITIAL;
+    public GameState getGameState() {
+        return state;
     }
-
 }

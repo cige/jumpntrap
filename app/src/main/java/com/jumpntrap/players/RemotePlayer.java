@@ -35,8 +35,6 @@ public final class RemotePlayer extends Player implements GameObserver {
 
     @Override
     public void actionRequired(Game game) {
-
-
     }
 
     @Override
@@ -70,15 +68,23 @@ public final class RemotePlayer extends Player implements GameObserver {
     }
 
     public void handleRealTimeMessageReceived(Game game, byte[] buff) {
-        // We have to init the game
-        if (game.isStateInitial()) {
-            // TODO : HANDLE WHEN THE MESSAGE IS "INVALID"
-            final GameConfigMessage gcm = SerializationUtils.deserialize(buff);
-            game.start(gcm.getTiles(), gcm.getTurn(), gcm.getPositions());
-        }
-        else {
-            final MoveMessage mm = SerializationUtils.deserialize(buff);
-            game.handleMove(mm.getDirection(), this);
+        switch (game.getGameState()) {
+            // We have to init the game
+            case INITIAL:
+                // TODO : HANDLE WHEN THE MESSAGE IS "INVALID"
+                final GameConfigMessage gcm = SerializationUtils.deserialize(buff);
+                game.start(gcm.getTiles(), gcm.getTurn(), gcm.getPositions());
+                break;
+
+            case STARTED:
+                final MoveMessage mm = SerializationUtils.deserialize(buff);
+                game.handleMove(mm.getDirection(), this);
+                break;
+
+            case GAMEOVER:
+                final GameConfigMessage gcm2 = SerializationUtils.deserialize(buff);
+                game.start(gcm2.getTiles(), gcm2.getTurn(), gcm2.getPositions());
+                break;
         }
     }
 }

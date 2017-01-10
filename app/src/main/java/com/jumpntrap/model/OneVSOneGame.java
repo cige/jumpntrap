@@ -13,12 +13,17 @@ public final class OneVSOneGame extends Game implements GameObserver{
     private int player2Score = 0;
 
     public OneVSOneGame(Player player1,Player player2) {
-        super(2);
+        this(player1,player2,true);
+    }
+
+    public OneVSOneGame(Player player1,Player player2, boolean host) {
+        super(2,host);
         this.player1 = player1;
         this.player2 = player2;
         addPlayer(this.player1);
         addPlayer(this.player2);
         this.addObserver(this);
+
     }
 
     public final int getPlayer1Score(){
