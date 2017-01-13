@@ -27,6 +27,10 @@ public final class Position {
         return line;
     }
 
+    public boolean isLegalPosition(int nbLines, int nbColumns){
+        return line > -1 && column > -1 && line < nbLines && column < nbColumns;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if(!(obj instanceof Position))

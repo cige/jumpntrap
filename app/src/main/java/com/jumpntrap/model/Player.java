@@ -35,15 +35,20 @@ public abstract class Player {
         Position newPosition = direction.newPosition(position);
         game.dropTile(position);
 
-        if(game.boardContainsTile(newPosition) && !game.isTileOccupied(newPosition)){
+        if(!game.isTileOccupied(newPosition)){
             position = newPosition;
-            return;
         }
 
-        isDead = true;
+        if(!game.boardContainsTile(position)){
+            kill();
+        }
     }
 
     public void actionRequired(Game game) {
+    }
+
+    public void kill(){
+        isDead = true;
     }
 
     public void resurrect() {

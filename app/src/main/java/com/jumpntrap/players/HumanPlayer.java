@@ -1,6 +1,7 @@
 package com.jumpntrap.players;
 
 import android.content.Context;
+import android.os.Vibrator;
 import android.view.GestureDetector;
 import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.MotionEvent;
@@ -16,11 +17,20 @@ import com.jumpntrap.model.Player;
 public class HumanPlayer extends Player implements OnTouchListener {
 
     private final GestureDetector gestureDetector;
+    private final Context context;
 
     public HumanPlayer(Context context){
         super();
         game = null;
+        this.context = context;
         gestureDetector = new GestureDetector(context, new GestureListener());
+    }
+
+    @Override
+    public void kill() {
+        super.kill();
+        Vibrator vb = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
+        vb.vibrate(900);
     }
 
     @Override

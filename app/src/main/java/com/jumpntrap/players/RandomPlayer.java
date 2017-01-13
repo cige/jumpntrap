@@ -44,7 +44,7 @@ public class RandomPlayer extends Player {
 
         // Simulating a reflexion time
         try {
-            Thread.sleep((long) (Math.random()*1000));
+            Thread.sleep((long) (500+Math.random()*500));
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

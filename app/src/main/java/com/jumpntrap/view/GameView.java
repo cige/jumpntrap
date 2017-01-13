@@ -46,7 +46,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     // Fonction qui "dessine" un écran de jeu
     public void doDraw(Canvas canvas) {
 
-        if(game == null || game.getGameState() != GameState.STARTED)
+        if(game == null)
             return;
 
         if (canvas == null) {
@@ -61,7 +61,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     }
 
-    private void drawBoard(Canvas canvas) { //TODO fulfill the screen
+    private void drawBoard(Canvas canvas) {
 
         int lineCursor = 0;
         int columnCursor;
@@ -91,27 +91,28 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         for(Player player: game.getPlayers()){
 
             Position pos = player.getPosition();
-            if(pos == null)
+
+            if(pos == null || !pos.isLegalPosition(nbLines,nbColumns))
                 continue;
 
-            if(game.isUserPlayer(player))
+            if(!player.isAlive())
+                p.setColor(Color.WHITE);
+            else if(game.isUserPlayer(player))
                 p.setColor(Color.RED);
             else
                 p.setColor(Color.BLUE);
 
-            if(player.isAlive()) {
-                int hreminders = 0;
-                int wreminders = 0;
-                for(int line = 0; line < pos.getLine(); line ++){
-                    hreminders += heightReminder[line];
-                }
-                for(int column = 0; column < pos.getColumn(); column ++){
-                    wreminders += weightReminder[column];
-                }
-                canvas.drawCircle(tileLength*pos.getColumn() + wreminders + radius + (weightReminder[pos.getColumn()] / 2),
-                        tileLength*pos.getLine() + hreminders + radius + (heightReminder[pos.getLine()] / 2),
-                        radius,p);
+            int hreminders = 0;
+            int wreminders = 0;
+            for(int line = 0; line < pos.getLine(); line ++){
+                hreminders += heightReminder[line];
             }
+            for(int column = 0; column < pos.getColumn(); column ++){
+                wreminders += weightReminder[column];
+            }
+            canvas.drawCircle(tileLength*pos.getColumn() + wreminders + radius + (weightReminder[pos.getColumn()] / 2),
+                    tileLength*pos.getLine() + hreminders + radius + (heightReminder[pos.getLine()] / 2),
+                    radius,p);
         }
     }
 

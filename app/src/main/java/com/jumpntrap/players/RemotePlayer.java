@@ -91,6 +91,7 @@ public final class RemotePlayer extends Player implements GameObserver {
             case GAMEOVER:
                 Log.d(TAG, "GAMEOVER");
                 final GameConfigMessage gcm2 = SerializationUtils.deserialize(buff);
+                game.restart();
                 game.start(gcm2.getTiles(), gcm2.getTurn(), gcm2.getPositions());
                 break;
         }
