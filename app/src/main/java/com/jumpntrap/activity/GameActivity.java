@@ -20,7 +20,7 @@ import com.jumpntrap.view.GameView;
 
 public abstract class GameActivity extends AppCompatActivity implements GameObserver {
 
-    private OneVSOneGame game;
+    protected OneVSOneGame game;
     private GameView view;
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,17 +35,12 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
         view = new GameView(this);
         LinearLayout boardLayout = (LinearLayout)findViewById(R.id.board);
         boardLayout.addView(view, ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
-
     }
 
     void setGame(OneVSOneGame game){
         this.game = game;
         game.addObserver(this);
         view.setGame(game);
-    }
-
-    Game getGame() {
-        return game;
     }
 
     void startGame(){

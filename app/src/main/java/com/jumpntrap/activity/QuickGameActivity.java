@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -41,26 +42,38 @@ public class QuickGameActivity extends GameActivity implements
     private String roomId;
 
     private RemotePlayer remotePlayer = null;
-
-    private Object isGameInitialisedLock = new Object(); //TODO review the lock system
+    private HumanPlayer humanPlayer = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        showGameBoard(false);
+        showSpinner(true);
 
-        googleApiClient =  new GoogleApiClient.Builder(this)
+        googleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
                 .addApi(Games.API).addScope(Games.SCOPE_GAMES)
                 .build();
 
-        if (!googleApiClient.isConnected()) {
-            Log.d(TAG, "Connecting client.");
-            googleApiClient.connect();
-        }
-        else {
+        if (googleApiClient.isConnected()) {
             Log.w(TAG, "GameHelper: client was already connected on onStart()");
+            return;
         }
+
+        Log.d(TAG, "Connecting client.");
+        googleApiClient.connect();
+    }
+
+    private void showGameBoard(boolean show) {
+        final int view = show ? View.VISIBLE : View.GONE;
+        findViewById(R.id.board).setVisibility(view);
+        findViewById(R.id.topBar).setVisibility(view);
+        findViewById(R.id.bottomBar).setVisibility(view);
+    }
+
+    private void showSpinner(boolean show) {
+        findViewById(R.id.loading_panel).setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     private void createQuickMatch() {
@@ -88,52 +101,52 @@ public class QuickGameActivity extends GameActivity implements
                 if (resultCode == Activity.RESULT_OK) {
                     // ready to start playing
                     Log.d(TAG, "Starting game");
+                    showSpinner(false);
                     initGame();
                 }
                 else if (resultCode == GamesActivityResultCodes.RESULT_LEFT_ROOM) {
-                    // player indicated that they want to leave the room
-                    //leaveRoom();
                 }
                 else if (resultCode == Activity.RESULT_CANCELED) {
-                    // Dialog was cancelled (user pressed back key, for instance). In our game,
-                    // this means leaving the room too. In more elaborate games, this could mean
-                    // something else (like minimizing the waiting room UI).
-                    //leaveRoom();
                 }
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void initGame(){
+    private void initGame() {
+        Log.d(TAG, "initGame");
 
-        synchronized (isGameInitialisedLock) {
-            Log.d(TAG, "initGame");
+        // Take 1st player as host
+        final Participant participant = participants.get(0);
+        final boolean isHost = myId.equals(participant.getParticipantId());
 
-            HumanPlayer humanPlayer = new HumanPlayer(this);
-            OneVSOneGame game = null;
-
-            // Take 1st player as host
-            final Participant participant = participants.get(0);
-            final boolean isHost = myId.equals(participant.getParticipantId());
-
-            if (isHost) {
-                remotePlayer = new RemotePlayer(googleApiClient, roomId, participants.get(1).getParticipantId());
-                game = new OneVSOneGame(humanPlayer, remotePlayer);
-            } else {
-                remotePlayer = new RemotePlayer(googleApiClient, roomId, participants.get(0).getParticipantId());
-                remotePlayer.setHost(true);
-                game = new OneVSOneGame(remotePlayer, humanPlayer, false);
-            }
-            game.addObserver(remotePlayer);
-            setGame(game);
-
-            game.start();
-            this.setOnTouchListener(humanPlayer);
-
-
-            isGameInitialisedLock.notify();
+        // If player is host
+        Log.d(TAG, "initGame - isHost : " + isHost);
+        if (isHost) {
+            createPlayersAndGame(true);
         }
+    }
+
+    private void createPlayersAndGame(boolean isHost) {
+        // Create players and game
+        if (isHost) {
+            humanPlayer = new HumanPlayer(this);
+            remotePlayer = new RemotePlayer(googleApiClient, roomId, participants.get(1).getParticipantId());
+            game = new OneVSOneGame(humanPlayer, remotePlayer);
+        }
+        else {
+            humanPlayer = new HumanPlayer(this);
+            remotePlayer = new RemotePlayer(googleApiClient, roomId, participants.get(0).getParticipantId());
+            remotePlayer.setHost(true);
+            game = new OneVSOneGame(remotePlayer, humanPlayer, false);
+        }
+
+        // Setup game
+        game.addObserver(remotePlayer);
+        setGame(game);
+        game.start();
+        this.setOnTouchListener(humanPlayer);
+        showGameBoard(true);
     }
 
     private void updateRoom(Room room) {
@@ -146,33 +159,27 @@ public class QuickGameActivity extends GameActivity implements
     public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
         Log.d(TAG, "onRealTimeMessageReceived");
 
+        // Create game is not created yet
+        if (game == null) {
+            createPlayersAndGame(false);
+        }
+
         byte[] buff = realTimeMessage.getMessageData();
-        // TODO : NEED TO FIX, sometimes it does not work
-
-            while (getGame() == null) {
-                synchronized (isGameInitialisedLock) {
-                    try {
-                        isGameInitialisedLock.wait();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-
-        remotePlayer.handleRealTimeMessageReceived(getGame(), buff);
+        remotePlayer.handleRealTimeMessageReceived(game, buff);
     }
 
     @Override
     public void onRoomCreated(int statusCode, Room room) {
         Log.d(TAG, "onRoomCreated");
-        if (statusCode == GamesStatusCodes.STATUS_OK) {
-            roomId = room.getRoomId();
-            Log.d(TAG, "Nb part : " + room.getParticipantIds().size());
-            RoomUtils.showWaitingRoom(this, room, googleApiClient);
-        }
-        else {
+        if (statusCode != GamesStatusCodes.STATUS_OK) {
             Log.e(TAG, "*** Error: onRoomCreated, status " + statusCode);
+            return;
         }
+
+        roomId = room.getRoomId();
+        Log.d(TAG, "Nb part : " + room.getParticipantIds().size());
+        showSpinner(false);
+        RoomUtils.showWaitingRoom(this, room, googleApiClient);
     }
 
     @Override
@@ -188,12 +195,12 @@ public class QuickGameActivity extends GameActivity implements
     @Override
     public void onRoomConnected(int statusCode, Room room) {
         Log.d(TAG, "onRoomConnected");
-        if (statusCode == GamesStatusCodes.STATUS_OK) {
-            updateRoom(room);
-        }
-        else {
+        if (statusCode != GamesStatusCodes.STATUS_OK) {
             Log.e(TAG, "*** Error: onRoomConnected, status " + statusCode);
+            return;
         }
+
+        updateRoom(room);
     }
 
     @Override
