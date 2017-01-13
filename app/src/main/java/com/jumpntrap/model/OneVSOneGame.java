@@ -26,12 +26,22 @@ public final class OneVSOneGame extends Game implements GameObserver{
 
     }
 
-    public final int getPlayer1Score(){
+    public final int getUserScore(){
+        if(isHost())
+            return player1Score;
+        return player2Score;
+    }
+
+    public final int getOpponentScore(){
+        if(isHost())
+            return player2Score;
         return player1Score;
     }
 
-    public final int getPlayer2Score(){
-        return player2Score;
+    public final boolean isUserPlayer(Player p){
+        if(isHost())
+            return p == player1;
+        return p == player2;
     }
 
     @Override

@@ -46,10 +46,6 @@ public abstract class Player {
     public void actionRequired(Game game) {
     }
 
-    public boolean isMainPlayer(){
-        return false;
-    }
-
     public void resurrect() {
         isDead = false;
     }

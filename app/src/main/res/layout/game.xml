@@ -7,7 +7,6 @@
         android:id="@+id/board"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimaryDark"
         android:orientation="vertical"
         android:layout_below="@+id/topBar"
         android:layout_above="@+id/bottomBar"
@@ -18,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_alignParentTop="true"
-        android:background="@color/colorPrimary"
+        android:background="@color/topPlayerColor"
         android:gravity="center">
         <TextView
             android:id="@+id/score_top"
@@ -33,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:layout_alignParentBottom="true"
-        android:background="@color/colorAccent"
+        android:background="@color/bottomPlayerColor"
         android:gravity="center">
         <TextView
             android:id="@+id/score_bottom"
