@@ -1,5 +1,7 @@
 package com.jumpntrap.model;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -34,7 +36,7 @@ public abstract class Game {
         isHost = true;
     }
 
-    public Game(int nbPlayers, boolean host) {
+    Game(int nbPlayers, boolean host) {
        this(nbPlayers);
         isHost = host;
     }
@@ -64,7 +66,7 @@ public abstract class Game {
         return false;
     }
 
-    private final Player nextPlayer(){
+    public final Player nextPlayer(){
         return players.get(turn);
     }
 
@@ -195,11 +197,14 @@ public abstract class Game {
 
     public final void handleMove(Direction direction, Player player){
 
+        Log.d("Game","starting handleMove for "+ player.getClass().getName());
         if(isOver())
             return;
 
-        if(player != nextPlayer()) // check if it's its turn else ignore the move
+        if(player != nextPlayer()) { // check if it's its turn else ignore the move
+            Log.d("Game","move ignored "+ player.getClass().getName());
             return;
+        }
 
         player.playMove(this,direction);
         for (GameObserver go : observers) {
@@ -208,8 +213,15 @@ public abstract class Game {
         checkIsOver();
         turn = (turn + 1) % nbPlayers;
 
-        if(!isOver())
-            nextPlayer().actionRequired(this);
+        if(!isOver()) {
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    nextPlayer().actionRequired(Game.this);
+                }
+            }).start();
+        }
+        Log.d("Game","ending handleMove for "+ player.getClass().getName());
     }
 
     private final void gameOver(Player winner){

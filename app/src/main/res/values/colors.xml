@@ -2,6 +2,8 @@
 <resources>
     <color name="bottomPlayerColor">#FF4081</color>
     <color name="topPlayerColor">#303F9F</color>
+    <color name="bottomPlayerWaitingColor">#f59dbb</color>
+    <color name="topPlayerWaitingColor">#7a80ab</color>
     <color name="deathColor">#ffffff</color>
 
 </resources>
