@@ -62,11 +62,11 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
         if(this.game != game)
             return;
 
-        TextView score1 = (TextView) findViewById(R.id.score_bottom);
-        TextView score2 = (TextView) findViewById(R.id.score_top);
+        TextView scoreBottom = (TextView) findViewById(R.id.score_bottom);
+        TextView scoreTop = (TextView) findViewById(R.id.score_top);
 
-        score1.setText(Integer.toString(this.game.getPlayer1Score()));
-        score2.setText(Integer.toString(this.game.getPlayer2Score()));
+        scoreBottom.setText(Integer.toString(this.game.getUserScore()));
+        scoreTop.setText(Integer.toString(this.game.getOpponentScore()));
 
         AlertDialog dialog = new AlertDialog.Builder(GameActivity.this).create();
         dialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Rematch",

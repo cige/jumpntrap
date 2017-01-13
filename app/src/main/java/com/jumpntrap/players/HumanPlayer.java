@@ -114,9 +114,4 @@ public class HumanPlayer extends Player implements OnTouchListener {
         private void onSwipeBottomLeft() {
             game.handleMove(Direction.SW,this);
         }
-
-        @Override
-        public boolean isMainPlayer() {
-            return true;
-        }
     }

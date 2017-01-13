@@ -223,6 +223,10 @@ public abstract class Game {
         return this.state == GameState.GAMEOVER;
     }
 
+    final protected boolean isHost(){
+        return isHost;
+    }
+
 
     @Override
     public String toString() {

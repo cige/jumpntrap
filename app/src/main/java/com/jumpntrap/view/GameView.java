@@ -8,6 +8,7 @@ import android.graphics.Rect;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import com.jumpntrap.R;
 import com.jumpntrap.model.Game;
 import com.jumpntrap.model.GameBoard;
 import com.jumpntrap.model.GameState;
@@ -20,12 +21,14 @@ import com.jumpntrap.model.Position;
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
     private GameLoopThread gameLoopThread;
-    private Game game;
+    private OneVSOneGame game;
     private GameBoard board;
     private final int nbLines,nbColumns;
 
     // Dimensions
     private int tileLength;
+    private final int[] heightReminder;
+    private final int[] weightReminder;
 
     // création de la surface de dessin
     public GameView(Context context) {
@@ -35,6 +38,9 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
         this.nbLines = Game.NB_LINES;
         this.nbColumns = Game.NB_COLUMNS;
+
+        this.heightReminder = new int[nbLines];
+        this.weightReminder = new int[nbColumns];
     }
 
     // Fonction qui "dessine" un écran de jeu
@@ -67,12 +73,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             columnCursor = 0;
             for(int column = 0; column < nbColumns; column ++) {
                 if (board.containsTile(new Position(line, column))) {
-                    Rect rect = new Rect(columnCursor, lineCursor, columnCursor + tileLength, lineCursor + tileLength);
+                    Rect rect = new Rect(columnCursor, lineCursor, columnCursor + tileLength + weightReminder[column], lineCursor + tileLength + heightReminder[line]);
                     canvas.drawRect(rect, p);
                 }
-                columnCursor += tileLength;
+                columnCursor = columnCursor + tileLength + weightReminder[column];
             }
-            lineCursor += tileLength;
+            lineCursor = lineCursor + tileLength + heightReminder[line];
         }
     }
 
@@ -88,13 +94,23 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             if(pos == null)
                 continue;
 
-            if(player.isMainPlayer())
-                p.setColor(Color.BLUE);
-            else
+            if(game.isUserPlayer(player))
                 p.setColor(Color.RED);
+            else
+                p.setColor(Color.BLUE);
 
             if(player.isAlive()) {
-                canvas.drawCircle(tileLength*pos.getColumn()+ radius,tileLength*pos.getLine()+ radius, radius,p);
+                int hreminders = 0;
+                int wreminders = 0;
+                for(int line = 0; line < pos.getLine(); line ++){
+                    hreminders += heightReminder[line];
+                }
+                for(int column = 0; column < pos.getColumn(); column ++){
+                    wreminders += weightReminder[column];
+                }
+                canvas.drawCircle(tileLength*pos.getColumn() + wreminders + radius + (weightReminder[pos.getColumn()] / 2),
+                        tileLength*pos.getLine() + hreminders + radius + (heightReminder[pos.getLine()] / 2),
+                        radius,p);
             }
         }
     }
@@ -136,9 +152,26 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
     }
 
     private void resize(int w, int h) {
-        int maxScreen = w > h ? w : h;
-        int maxBoard = nbLines > nbColumns ? nbLines : nbColumns;
-        this.tileLength =  maxScreen / maxBoard;
+        for(int i = 0; i < nbLines; i ++)
+            heightReminder[i] = 0;
+        for(int i = 0; i < nbColumns; i ++)
+            weightReminder[i] = 0;
+
+        this.tileLength =  Math.min(h / nbLines, w / nbColumns);
+        int hReminder = h % tileLength;
+        int wReminder = w % tileLength;
+        int i = 0;
+        while(hReminder > 0){
+            heightReminder[i] ++;
+            hReminder --;
+            i = (i + 1) % nbLines;
+        }
+        i = 0;
+        while(wReminder > 0){
+            weightReminder[i] ++;
+            wReminder --;
+            i = (i + 1) % nbColumns;
+        }
     }
 
     public void setGame(OneVSOneGame game) {
