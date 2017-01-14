@@ -2,6 +2,7 @@ package com.jumpntrap.activity;
 
 import android.app.ActionBar;
 import android.content.DialogInterface;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -44,7 +45,7 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
     }
 
     void startGame(){
-        new Thread(new Runnable() { //TODO find another way to manage the loop due to player.actionRequired
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 game.start();
@@ -105,12 +106,12 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
             public void run() {
 
                 if(g.isUserPlayer(g.nextPlayer())){
-                    bottomBar.setBackgroundColor(getResources().getColor(R.color.bottomPlayerColor));
-                    topBar.setBackgroundColor(getResources().getColor(R.color.topPlayerWaitingColor));
+                    bottomBar.setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.bottomPlayerColor));
+                    topBar.setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.topPlayerWaitingColor));
                 }
                 else{
-                    bottomBar.setBackgroundColor(getResources().getColor(R.color.bottomPlayerWaitingColor));
-                    topBar.setBackgroundColor(getResources().getColor(R.color.topPlayerColor));
+                    bottomBar.setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.bottomPlayerWaitingColor));
+                    topBar.setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.topPlayerColor));
                 }
             }
         });
@@ -132,12 +133,12 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
             public void run() {
 
         if(g.isUserPlayer(player)){
-            bottomBar.setBackgroundColor(getResources().getColor(R.color.bottomPlayerWaitingColor));
-            topBar.setBackgroundColor(getResources().getColor(R.color.topPlayerColor));
+            bottomBar.setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.bottomPlayerWaitingColor));
+            topBar.setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.topPlayerColor));
         }
         else{
-            bottomBar.setBackgroundColor(getResources().getColor(R.color.bottomPlayerColor));
-            topBar.setBackgroundColor(getResources().getColor(R.color.topPlayerWaitingColor));
+            bottomBar.setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.bottomPlayerColor));
+            topBar.setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.topPlayerWaitingColor));
         }}});
     }
 }

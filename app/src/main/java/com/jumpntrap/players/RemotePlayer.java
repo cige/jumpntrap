@@ -70,14 +70,13 @@ public final class RemotePlayer extends Player implements GameObserver {
         isHost = host;
     }
 
-    public void handleRealTimeMessageReceived(Game game, byte[] buff) {
+    public void handleRealTimeMessageReceived(Game game, byte[] buff) { // TODO : HANDLE WHEN THE MESSAGE IS "INVALID"
         Log.d(TAG, "handleRealTimeMessageReceived");
 
         switch (game.getGameState()) {
             // We have to init the game
             case INITIAL:
                 Log.d(TAG, "INITIAL");
-                // TODO : HANDLE WHEN THE MESSAGE IS "INVALID"
                 final GameConfigMessage gcm = SerializationUtils.deserialize(buff);
                 game.start(gcm.getTiles(), gcm.getTurn(), gcm.getPositions());
                 break;

@@ -37,16 +37,16 @@ public class RandomPlayer extends Player {
             }
         }
 
-        // No moves found
-        if (directions.isEmpty()) {
-            return Direction.getRandom();
-        }
-
         // Simulating a reflexion time
         try {
             Thread.sleep((long) (500+Math.random()*500));
         } catch (InterruptedException e) {
             e.printStackTrace();
+        }
+
+        // No moves found
+        if (directions.isEmpty()) {
+            return Direction.getRandom();
         }
 
         // Return random direction

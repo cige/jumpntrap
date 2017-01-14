@@ -9,12 +9,13 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 
 import com.jumpntrap.model.Direction;
+import com.jumpntrap.model.Game;
 import com.jumpntrap.model.Player;
 
 /**
  * Based on: http://stackoverflow.com/questions/4139288/android-how-to-handle-right-to-left-swipe-gestures
  */
-public class HumanPlayer extends Player implements OnTouchListener {
+public final class HumanPlayer extends Player implements OnTouchListener {
 
     private final GestureDetector gestureDetector;
     private final Context context;
@@ -27,10 +28,10 @@ public class HumanPlayer extends Player implements OnTouchListener {
     }
 
     @Override
-    public void kill() {
+    protected final void kill(){
         super.kill();
         Vibrator vb = (Vibrator) context.getSystemService(Context.VIBRATOR_SERVICE);
-        vb.vibrate(900);
+        vb.vibrate(100);
     }
 
     @Override

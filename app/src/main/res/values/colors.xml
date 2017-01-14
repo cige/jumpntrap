@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="bottomPlayerColor">#FF4081</color>
-    <color name="topPlayerColor">#303F9F</color>
-    <color name="bottomPlayerWaitingColor">#f59dbb</color>
-    <color name="topPlayerWaitingColor">#7a80ab</color>
-    <color name="deathColor">#ffffff</color>
+    <color name="tileColor">#F4F4EF</color>
+    <color name="emtpyColor">#ACBEBE</color>
+    <color name="bottomPlayerColor">#A01D26</color>
+    <color name="topPlayerColor">#20232A</color>
+    <color name="bottomPlayerWaitingColor">#ACBEBE</color>
+    <color name="topPlayerWaitingColor">#ACBEBE</color>
+    <color name="deathColor">#F4F4EF</color>
 
 </resources>
