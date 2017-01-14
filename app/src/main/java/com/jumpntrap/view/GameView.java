@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.support.v4.content.ContextCompat;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -54,27 +55,28 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         // on efface l'écran
-        canvas.drawColor(Color.BLACK);
+        canvas.drawColor(ContextCompat.getColor(getContext(), R.color.emptyColor));
 
-        this.drawBoard(canvas);
-        this.drawPlayers(canvas);
+        final Paint p = new Paint();
+        p.setFlags(Paint.ANTI_ALIAS_FLAG);
+        this.drawBoard(canvas,p);
+        this.drawPlayers(canvas,p);
 
     }
 
-    private void drawBoard(Canvas canvas) {
+    private void drawBoard(Canvas canvas,Paint paint) {
 
         int lineCursor = 0;
         int columnCursor;
 
-        Paint p = new Paint();
-        p.setColor(Color.GRAY);
+        paint.setColor(ContextCompat.getColor(getContext(), R.color.tileColor));
 
         for(int line = 0; line < nbLines; line ++){
             columnCursor = 0;
             for(int column = 0; column < nbColumns; column ++) {
                 if (board.containsTile(new Position(line, column))) {
                     Rect rect = new Rect(columnCursor, lineCursor, columnCursor + tileLength + weightReminder[column], lineCursor + tileLength + heightReminder[line]);
-                    canvas.drawRect(rect, p);
+                    canvas.drawRect(rect, paint);
                 }
                 columnCursor = columnCursor + tileLength + weightReminder[column];
             }
@@ -82,9 +84,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    private void drawPlayers(Canvas canvas) {
-
-        Paint p = new Paint();
+    private void drawPlayers(Canvas canvas,Paint paint) {
 
         int radius = tileLength / 2;
 
@@ -96,11 +96,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 continue;
 
             if(!player.isAlive())
-                p.setColor(Color.WHITE);
+                paint.setColor(ContextCompat.getColor(getContext(), R.color.deathColor));
             else if(game.isUserPlayer(player))
-                p.setColor(Color.RED);
+                paint.setColor(ContextCompat.getColor(getContext(), R.color.bottomPlayerColor));
             else
-                p.setColor(Color.BLUE);
+                paint.setColor(ContextCompat.getColor(getContext(), R.color.topPlayerColor));
 
             int hreminders = 0;
             int wreminders = 0;
@@ -112,7 +112,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             }
             canvas.drawCircle(tileLength*pos.getColumn() + wreminders + radius + (weightReminder[pos.getColumn()] / 2),
                     tileLength*pos.getLine() + hreminders + radius + (heightReminder[pos.getLine()] / 2),
-                    radius,p);
+                    radius,paint);
         }
     }
 

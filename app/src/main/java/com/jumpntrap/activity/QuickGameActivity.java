@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -71,18 +72,35 @@ public class QuickGameActivity extends GameActivity implements
 
     @Override
     public void onGameOver(Game game, Player winner) {
-        updateScores(game);
+        if (this.game != game) {
+            return;
+        }
 
-        dialog = new RematchRemoteDialog(
-                this,
-                googleApiClient,
-                (OneVSOneRemoteGame) game,
-                roomId,
-                participants.get(isHost ? 0 : 1),
-                participants.get(isHost ? 1 : 0),
-                isHost
-        );
-        dialog.show();
+        final int userScore = this.game.getUserScore();
+        final int opponentScore = this.game.getOpponentScore();
+
+        final TextView scoreBottom = (TextView) findViewById(R.id.score_bottom);
+        final TextView scoreTop = (TextView) findViewById(R.id.score_top);
+
+        final OneVSOneRemoteGame remoteGame = (OneVSOneRemoteGame) game;
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                scoreBottom.setText(String.valueOf(userScore));
+                scoreTop.setText(String.valueOf(opponentScore));
+
+                dialog = new RematchRemoteDialog(
+                        QuickGameActivity.this,
+                        googleApiClient,
+                        remoteGame,
+                        roomId,
+                        participants.get(isHost ? 0 : 1),
+                        participants.get(isHost ? 1 : 0),
+                        isHost
+                );
+                dialog.show();
+            }
+        });
     }
 
     private void showGameBoard(final int view) {

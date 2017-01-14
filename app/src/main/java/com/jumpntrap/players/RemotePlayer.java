@@ -74,7 +74,6 @@ public final class RemotePlayer extends Player implements GameObserver {
             // We have to init the game
             case INITIAL:
                 Log.d(TAG, "INITIAL");
-                // TODO : HANDLE WHEN THE MESSAGE IS "INVALID"
                 final GameConfigMessage gcm = SerializationUtils.deserialize(buff);
                 game.start(gcm.getTiles(), gcm.getTurn(), gcm.getPositions());
                 break;

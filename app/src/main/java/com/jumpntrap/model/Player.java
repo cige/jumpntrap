@@ -11,7 +11,7 @@ public abstract class Player {
         this.position = null;
     }
 
-    public void setGame(Game game) {
+    void setGame(Game game) {
         this.game = game;
     }
 
@@ -27,7 +27,7 @@ public abstract class Player {
         return !isDead;
     }
 
-    public final void playMove(Game game, Direction direction){
+    final void playMove(Game game, Direction direction){
 
         if(isDead)
             return;
@@ -44,14 +44,14 @@ public abstract class Player {
         }
     }
 
-    public void actionRequired(Game game) {
+    protected void actionRequired(Game game) {
     }
 
-    public void kill(){
+    protected void kill(){
         isDead = true;
     }
 
-    public void resurrect() {
+    protected void resurrect() {
         isDead = false;
     }
 }

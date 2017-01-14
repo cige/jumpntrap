@@ -2,6 +2,7 @@ package com.jumpntrap.activity;
 
 import android.app.ActionBar;
 import android.content.DialogInterface;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -46,7 +47,7 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
     }
 
     void startGame(){
-        new Thread(new Runnable() { //TODO find another way to manage the loop due to player.actionRequired
+        new Thread(new Runnable() {
             @Override
             public void run() {
                 game.start();
@@ -59,40 +60,86 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
     }
 
     @Override
-    public void onGameOver(final Game game, final Player winner) {
-        updateScores(game);
-
-        AlertDialog dialog = new AlertDialog.Builder(GameActivity.this).create();
-        dialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Rematch",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        game.restart();
-                    }
-                });
-
-        dialog.show();
-    }
-
-    protected void updateScores(final Game game) {
+    public void onGameOver(final Game game,final Player winner) {
         if (this.game != game) {
             return;
         }
 
+        final int userScore = this.game.getUserScore();
+        final int opponentScore = this.game.getOpponentScore();
+
         final TextView scoreBottom = (TextView) findViewById(R.id.score_bottom);
         final TextView scoreTop = (TextView) findViewById(R.id.score_top);
 
-        scoreBottom.setText(String.valueOf(this.game.getUserScore()));
-        scoreTop.setText(String.valueOf(this.game.getOpponentScore()));
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                scoreBottom.setText(String.valueOf(userScore));
+                scoreTop.setText(String.valueOf(opponentScore));
+
+                AlertDialog dialog = new AlertDialog.Builder(GameActivity.this).create();
+                dialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Rematch",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                game.restart();
+                            }
+                        });
+
+                dialog.show();
+            }
+        });
     }
 
     @Override
-    public void onGameStarted(Game game) {
+    public void onGameStarted(final Game game) {
+
+        if(game != this.game)
+            return;
+
+        final OneVSOneGame g = this.game;
+
+        final LinearLayout topBar = (LinearLayout) findViewById(R.id.topBar);
+        final LinearLayout bottomBar = (LinearLayout) findViewById(R.id.bottomBar);
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                if(g.isUserPlayer(g.nextPlayer())){
+                    bottomBar.setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.bottomPlayerColor));
+                    topBar.setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.topPlayerWaitingColor));
+                }
+                else{
+                    bottomBar.setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.bottomPlayerWaitingColor));
+                    topBar.setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.topPlayerColor));
+                }
+            }
+        });
 
     }
 
     @Override
-    public void onMovedPlayed(Game game, Player player, Direction move) {
+    public void onMovedPlayed(Game game,final Player player, Direction move){
+        if(this.game != game)
+            return;
 
+        final OneVSOneGame g = this.game;
+
+        final LinearLayout topBar = (LinearLayout) findViewById(R.id.topBar);
+        final LinearLayout bottomBar = (LinearLayout) findViewById(R.id.bottomBar);
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+        if(g.isUserPlayer(player)){
+            bottomBar.setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.bottomPlayerWaitingColor));
+            topBar.setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.topPlayerColor));
+        }
+        else{
+            bottomBar.setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.bottomPlayerColor));
+            topBar.setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.topPlayerWaitingColor));
+        }}});
     }
 }
