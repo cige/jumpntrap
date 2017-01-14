@@ -7,38 +7,34 @@ import com.jumpntrap.model.Position;
 import java.io.Serializable;
 import java.util.List;
 
-/**
- * Created by Victor on 10/01/2017.
- */
+public final class GameConfigMessage implements Serializable {
+    private final boolean[][] tiles;
+    private final int turn;
+    private final int[] positions;
 
-public class GameConfigMessage implements Serializable {
-    private boolean[][] tiles;
-    private int turn;
-    private int[] positions;
-
-    public GameConfigMessage(Game game) {
+    public GameConfigMessage(final Game game) {
         tiles = game.getGameBoard().serialize();
         turn = game.getTurn();
 
-        List<Player> players = game.getPlayers();
+        final List<Player> players = game.getPlayers();
         positions = new int[players.size() * 2];
         for (int i = 0; i < players.size(); ++i) {
-            Position pos = players.get(i).getPosition();
+            final Position pos = players.get(i).getPosition();
             final int index = i * 2;
             positions[index] = pos.line;
             positions[index + 1] = pos.column;
         }
     }
 
-    public boolean[][] getTiles() {
+    public final boolean[][] getTiles() {
         return tiles;
     }
 
-    public int getTurn() {
+    public final int getTurn() {
         return turn;
     }
 
-    public int[] getPositions() {
+    public final int[] getPositions() {
         return positions;
     }
 }

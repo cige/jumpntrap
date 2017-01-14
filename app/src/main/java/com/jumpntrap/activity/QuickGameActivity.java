@@ -12,7 +12,6 @@ import android.view.WindowManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
-import com.google.android.gms.games.GamesActivityResultCodes;
 import com.google.android.gms.games.GamesStatusCodes;
 import com.google.android.gms.games.multiplayer.Participant;
 import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
@@ -23,7 +22,10 @@ import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListene
 import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
 import com.google.example.games.basegameutils.BaseGameUtils;
 import com.jumpntrap.R;
-import com.jumpntrap.model.OneVSOneGame;
+import com.jumpntrap.dialog.RematchRemoteDialog;
+import com.jumpntrap.model.Game;
+import com.jumpntrap.model.OneVSOneRemoteGame;
+import com.jumpntrap.model.Player;
 import com.jumpntrap.players.HumanPlayer;
 import com.jumpntrap.players.RemotePlayer;
 import com.jumpntrap.util.RoomUtils;
@@ -42,12 +44,14 @@ public class QuickGameActivity extends GameActivity implements
     private String roomId;
 
     private RemotePlayer remotePlayer = null;
-    private HumanPlayer humanPlayer = null;
+    private boolean isHost = false;
+
+    private RematchRemoteDialog dialog = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        showGameBoard(false);
+        showGameBoard(View.GONE);
         showSpinner(true);
 
         googleApiClient = new GoogleApiClient.Builder(this)
@@ -65,8 +69,23 @@ public class QuickGameActivity extends GameActivity implements
         googleApiClient.connect();
     }
 
-    private void showGameBoard(boolean show) {
-        final int view = show ? View.VISIBLE : View.GONE;
+    @Override
+    public void onGameOver(Game game, Player winner) {
+        updateScores(game);
+
+        dialog = new RematchRemoteDialog(
+                this,
+                googleApiClient,
+                (OneVSOneRemoteGame) game,
+                roomId,
+                participants.get(isHost ? 0 : 1),
+                participants.get(isHost ? 1 : 0),
+                isHost
+        );
+        dialog.show();
+    }
+
+    private void showGameBoard(final int view) {
         findViewById(R.id.board).setVisibility(view);
         findViewById(R.id.topBar).setVisibility(view);
         findViewById(R.id.bottomBar).setVisibility(view);
@@ -78,9 +97,9 @@ public class QuickGameActivity extends GameActivity implements
 
     private void createQuickMatch() {
         // Quick-start a game with 1 randomly selected opponent
-        Bundle autoMatchCriteria = RoomConfig.createAutoMatchCriteria(1, 1, 0);
+        final Bundle autoMatchCriteria = RoomConfig.createAutoMatchCriteria(1, 1, 0);
 
-        RoomConfig.Builder rtmConfigBuilder = RoomConfig.builder(this);
+        final RoomConfig.Builder rtmConfigBuilder = RoomConfig.builder(this);
         rtmConfigBuilder.setMessageReceivedListener(this)
                 .setRoomStatusUpdateListener(this)
                 .setAutoMatchCriteria(autoMatchCriteria);
@@ -104,10 +123,12 @@ public class QuickGameActivity extends GameActivity implements
                     showSpinner(false);
                     initGame();
                 }
+                /*
                 else if (resultCode == GamesActivityResultCodes.RESULT_LEFT_ROOM) {
                 }
                 else if (resultCode == Activity.RESULT_CANCELED) {
                 }
+                */
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -118,27 +139,29 @@ public class QuickGameActivity extends GameActivity implements
 
         // Take 1st player as host
         final Participant participant = participants.get(0);
-        final boolean isHost = myId.equals(participant.getParticipantId());
+        isHost = myId.equals(participant.getParticipantId());
 
         // If player is host
         Log.d(TAG, "initGame - isHost : " + isHost);
         if (isHost) {
-            createPlayersAndGame(true);
+            createPlayersAndGame();
         }
     }
 
-    private void createPlayersAndGame(boolean isHost) {
+    private void createPlayersAndGame() {
+        HumanPlayer humanPlayer;
+
         // Create players and game
         if (isHost) {
             humanPlayer = new HumanPlayer(this);
             remotePlayer = new RemotePlayer(googleApiClient, roomId, participants.get(1).getParticipantId());
-            game = new OneVSOneGame(humanPlayer, remotePlayer);
+            game = new OneVSOneRemoteGame(humanPlayer, remotePlayer);
         }
         else {
             humanPlayer = new HumanPlayer(this);
             remotePlayer = new RemotePlayer(googleApiClient, roomId, participants.get(0).getParticipantId());
             remotePlayer.setHost(true);
-            game = new OneVSOneGame(remotePlayer, humanPlayer, false);
+            game = new OneVSOneRemoteGame(remotePlayer, humanPlayer, false);
         }
 
         // Setup game
@@ -146,7 +169,7 @@ public class QuickGameActivity extends GameActivity implements
         setGame(game);
         game.start();
         this.setOnTouchListener(humanPlayer);
-        showGameBoard(true);
+        showGameBoard(View.VISIBLE);
     }
 
     private void updateRoom(Room room) {
@@ -161,11 +184,11 @@ public class QuickGameActivity extends GameActivity implements
 
         // Create game is not created yet
         if (game == null) {
-            createPlayersAndGame(false);
+            createPlayersAndGame();
         }
 
         byte[] buff = realTimeMessage.getMessageData();
-        remotePlayer.handleRealTimeMessageReceived(game, buff);
+        remotePlayer.handleRealTimeMessageReceived(game, buff, dialog);
     }
 
     @Override

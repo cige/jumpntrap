@@ -28,7 +28,9 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
 
         //removing the action bar
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-        getSupportActionBar().hide();
+        if (getActionBar() != null) {
+            getActionBar().hide();
+        }
 
         this.setContentView(R.layout.game);
 
@@ -57,16 +59,8 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
     }
 
     @Override
-    public void onGameOver(final Game game,final Player winner) {
-
-        if(this.game != game)
-            return;
-
-        TextView scoreBottom = (TextView) findViewById(R.id.score_bottom);
-        TextView scoreTop = (TextView) findViewById(R.id.score_top);
-
-        scoreBottom.setText(Integer.toString(this.game.getUserScore()));
-        scoreTop.setText(Integer.toString(this.game.getOpponentScore()));
+    public void onGameOver(final Game game, final Player winner) {
+        updateScores(game);
 
         AlertDialog dialog = new AlertDialog.Builder(GameActivity.this).create();
         dialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Rematch",
@@ -78,7 +72,18 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
                 });
 
         dialog.show();
+    }
 
+    protected void updateScores(final Game game) {
+        if (this.game != game) {
+            return;
+        }
+
+        final TextView scoreBottom = (TextView) findViewById(R.id.score_bottom);
+        final TextView scoreTop = (TextView) findViewById(R.id.score_top);
+
+        scoreBottom.setText(String.valueOf(this.game.getUserScore()));
+        scoreTop.setText(String.valueOf(this.game.getOpponentScore()));
     }
 
     @Override

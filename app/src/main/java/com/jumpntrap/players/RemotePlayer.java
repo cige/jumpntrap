@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
+import com.jumpntrap.dialog.RematchRemoteDialog;
 import com.jumpntrap.model.Direction;
 import com.jumpntrap.model.Game;
 import com.jumpntrap.model.GameObserver;
@@ -12,10 +13,6 @@ import com.jumpntrap.realtime.GameConfigMessage;
 import com.jumpntrap.realtime.MoveMessage;
 
 import org.apache.commons.lang3.SerializationUtils;
-
-/**
- * Created by Victor on 10/01/2017.
- */
 
 public final class RemotePlayer extends Player implements GameObserver {
     private final static String TAG = "RemotePlayer";
@@ -70,7 +67,7 @@ public final class RemotePlayer extends Player implements GameObserver {
         isHost = host;
     }
 
-    public void handleRealTimeMessageReceived(Game game, byte[] buff) {
+    public void handleRealTimeMessageReceived(final Game game, final byte[] buff, final RematchRemoteDialog dialog) {
         Log.d(TAG, "handleRealTimeMessageReceived");
 
         switch (game.getGameState()) {
@@ -89,11 +86,8 @@ public final class RemotePlayer extends Player implements GameObserver {
                 break;
 
             case GAMEOVER:
-                Log.d(TAG, "GAMEOVER");
-                final GameConfigMessage gcm2 = SerializationUtils.deserialize(buff);
-                game.restart();
-                game.start(gcm2.getTiles(), gcm2.getTurn(), gcm2.getPositions());
-                break;
+                Log.d(TAG, "GAME OVER");
+                dialog.setRemotePlayerTextAsReady();
         }
     }
 }

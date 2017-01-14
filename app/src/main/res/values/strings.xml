@@ -6,4 +6,8 @@
     <string name="signin_error">There was an issue with sign in. Please try again later.</string>
     <string name="game_problem">An error occurred while starting the game. Please try again.</string>
     <string name="help">Help</string>
+    <string name="icon_check">\u2713</string>
+    <string name="players">Players</string>
+    <string name="ready">Ready</string>
+    <string name="leave">Leave</string>
 </resources>

@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Created by Victor on 13/12/2016.
- */
 
 public abstract class Game {
 
@@ -16,27 +13,19 @@ public abstract class Game {
     private GameBoard gameBoard;
     private GameState state;
 
-    final int nbPlayers;
-    final List<Player> players;
+    private final int nbPlayers;
+    private final List<Player> players;
 
-    final List<GameObserver> observers;
+    private final List<GameObserver> observers;
 
     private int turn;
-    private boolean isHost;
 
-    public Game(int nbPlayers) {
-
+    Game(int nbPlayers) {
         this.nbPlayers = nbPlayers;
         gameBoard = new GameBoard(NB_LINES, NB_COLUMNS,nbPlayers);
         players = new ArrayList<>();
         observers = new ArrayList<>();
         state = GameState.INITIAL;
-        isHost = true;
-    }
-
-    public Game(int nbPlayers, boolean host) {
-       this(nbPlayers);
-        isHost = host;
     }
 
     final void addPlayer(Player player){
@@ -64,7 +53,7 @@ public abstract class Game {
         return false;
     }
 
-    private final Player nextPlayer(){
+    private Player nextPlayer(){
         return players.get(turn);
     }
 
@@ -73,9 +62,7 @@ public abstract class Game {
     }
 
     public void start() {
-        if (isHost) {
-            start(null, -1, null);
-        }
+        start(null, -1, null);
     }
 
     public void start(boolean[][] tiles,int turn,int[] positions) {
@@ -139,7 +126,7 @@ public abstract class Game {
         }
     }
 
-    private final int toss(int turn){
+    private int toss(int turn){
         if(turn != -1) {
             this.turn = turn;
             return turn;
@@ -153,20 +140,23 @@ public abstract class Game {
     }
 
     public void restart() {
+        reset();
+        start();
+    }
 
-        for(Player p: getPlayers()) {
+    public final void reset() {
+        state = GameState.INITIAL;
+
+        for (final Player p : getPlayers()) {
             p.setPosition(null);
             p.resurrect();
         }
-
-        start();
     }
 
     /**
      * A game isn't over if at least 2 players are still alive.
-     * @return the winner of the game, if exists.
      */
-    public void checkIsOver() {
+    private void checkIsOver() {
 
         Player winner = null;
 
@@ -185,7 +175,7 @@ public abstract class Game {
         gameOver(winner);
     }
 
-    public final void dropTile(Position position) {
+    final void dropTile(Position position) {
         this.gameBoard.dropTile(position);
     }
 
@@ -212,21 +202,16 @@ public abstract class Game {
             nextPlayer().actionRequired(this);
     }
 
-    private final void gameOver(Player winner){
+    private void gameOver(Player winner){
         this.state = GameState.GAMEOVER;
         for(GameObserver observer:observers){
             observer.onGameOver(this,winner);
         }
     }
 
-    final boolean isOver(){
+    private boolean isOver(){
         return this.state == GameState.GAMEOVER;
     }
-
-    final protected boolean isHost(){
-        return isHost;
-    }
-
 
     @Override
     public String toString() {
