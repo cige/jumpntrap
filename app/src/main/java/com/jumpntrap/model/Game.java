@@ -24,7 +24,7 @@ public abstract class Game {
 
     Game(int nbPlayers) {
         this.nbPlayers = nbPlayers;
-        gameBoard = new GameBoard(NB_LINES, NB_COLUMNS,nbPlayers);
+        gameBoard = new GameBoard(NB_LINES, NB_COLUMNS);
         players = new ArrayList<>();
         observers = new ArrayList<>();
         state = GameState.INITIAL;

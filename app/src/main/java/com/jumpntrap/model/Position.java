@@ -1,11 +1,5 @@
 package com.jumpntrap.model;
 
-import java.util.ArrayList;
-
-/**
- * Created by Victor on 13/12/2016.
- */
-
 public final class Position {
     public final int line;
     public final int column;

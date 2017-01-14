@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 
 import com.jumpntrap.model.Direction;
-import com.jumpntrap.model.Game;
 import com.jumpntrap.model.Player;
 
 /**
@@ -36,9 +35,7 @@ public final class HumanPlayer extends Player implements OnTouchListener {
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if(game == null)
-            return false;
-        return gestureDetector.onTouchEvent(event);
+        return game != null && gestureDetector.onTouchEvent(event);
     }
 
     private final class GestureListener extends SimpleOnGestureListener { //TODO improve the gestureListener to make it more natural

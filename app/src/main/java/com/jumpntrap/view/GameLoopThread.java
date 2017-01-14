@@ -5,7 +5,7 @@ import android.graphics.Canvas;
 /**
  * Based on: https://fr.jeffprod.com/blog/2015/les-bases-d-un-jeu-android-en-2d.html
  */
-public class GameLoopThread extends Thread
+class GameLoopThread extends Thread
     {
     // on définit arbitrairement le nombre d'images par secondes à 30
     private final static int FRAMES_PER_SECOND = 30;
@@ -18,12 +18,12 @@ public class GameLoopThread extends Thread
     private boolean running = false; // état du thread, en cours ou non
 
     // constructeur de l'objet, on lui associe l'objet view passé en paramètre
-    public GameLoopThread(GameView view) {
+    GameLoopThread(GameView view) {
         this.view = view;
     }
 
     // défini l'état du thread : true ou false
-    public void setRunning(boolean run) {
+    void setRunning(boolean run) {
         running = run;
         }
 
@@ -61,7 +61,7 @@ public class GameLoopThread extends Thread
             try {
                 if (sleepTime >= 0) {sleep(sleepTime);}
                 }
-            catch (Exception e) {}
+            catch (Exception e) {e.printStackTrace();}
             } // boucle while (running)
         } // public void run()
 

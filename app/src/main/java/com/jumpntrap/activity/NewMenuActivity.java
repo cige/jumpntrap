@@ -15,7 +15,10 @@ public class NewMenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         //removing the action bar
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-        getSupportActionBar().hide();
+
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
+        }
 
         setContentView(R.layout.new_menu);
     }

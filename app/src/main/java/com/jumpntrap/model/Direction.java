@@ -1,8 +1,5 @@
 package com.jumpntrap.model;
 
-/**
- * Created by Victor on 13/12/2016.
- */
 
 public enum Direction {
     NW(new Position(-1, -1)),
@@ -16,7 +13,7 @@ public enum Direction {
 
     private final Position pos;
 
-    private Direction(Position pos) {
+    Direction(Position pos) {
         this.pos = pos;
     }
 

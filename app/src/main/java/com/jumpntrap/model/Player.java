@@ -15,7 +15,7 @@ public abstract class Player {
         this.game = game;
     }
 
-    public final void setPosition(Position pos) {
+    final void setPosition(Position pos) {
         this.position = pos;
     }
 
@@ -51,7 +51,7 @@ public abstract class Player {
         isDead = true;
     }
 
-    protected void resurrect() {
+    void resurrect() {
         isDead = false;
     }
 }

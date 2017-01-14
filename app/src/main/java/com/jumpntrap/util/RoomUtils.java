@@ -7,9 +7,6 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.multiplayer.realtime.Room;
 
-/**
- * Created by Victor on 06/01/2017.
- */
 
 public class RoomUtils {
     public static final int RC_WAITING_ROOM = 10002;

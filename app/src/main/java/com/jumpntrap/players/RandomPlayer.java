@@ -9,10 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Created by Victor on 13/12/2016.
- */
-
 public class RandomPlayer extends Player {
 
     public RandomPlayer() {
@@ -24,7 +20,7 @@ public class RandomPlayer extends Player {
         game.handleMove(direction,this);
     }
 
-    private final Direction chooseMove(Game game) {
+    private Direction chooseMove(Game game) {
         List<Direction> directions = new ArrayList<>();
         // Get valid directions
         for (Direction direction : Direction.values()) {

@@ -2,7 +2,6 @@ package com.jumpntrap.view;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.v4.content.ContextCompat;
@@ -12,7 +11,6 @@ import android.view.SurfaceView;
 import com.jumpntrap.R;
 import com.jumpntrap.model.Game;
 import com.jumpntrap.model.GameBoard;
-import com.jumpntrap.model.GameState;
 import com.jumpntrap.model.OneVSOneGame;
 import com.jumpntrap.model.Player;
 import com.jumpntrap.model.Position;
@@ -140,6 +138,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 gameLoopThread.join();
                 retry = false;
             } catch (InterruptedException e) {
+                e.printStackTrace();
             }
         }
     }

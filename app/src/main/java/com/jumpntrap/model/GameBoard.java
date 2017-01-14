@@ -1,8 +1,5 @@
 package com.jumpntrap.model;
 
-/**
- * Created by Victor on 13/12/2016.
- */
 
 public class GameBoard {
 
@@ -11,7 +8,7 @@ public class GameBoard {
     private final int nbLines;
     private final int nbColumns;
 
-    public GameBoard(int nbLines,int nbColumns, int nbPlayers) {
+    GameBoard(int nbLines,int nbColumns) {
 
         this.nbLines = nbLines;
         this.nbColumns = nbColumns;
@@ -19,14 +16,11 @@ public class GameBoard {
 
     }
 
-    private void generateTiles(int nbPlayers,double density) {
+    private void generateTiles(int nbPlayers, double density) {
 
         for (int line = 0; line < nbLines; ++line) {
             for (int column = 0; column < nbColumns; ++column) {
-                if(Math.random() < density) //TODO generate a playable board, no isolated tile for example, no disadvantaged player ...
-                    tiles[line][column] = true;
-                else
-                    tiles[line][column] = false;
+                tiles[line][column] = Math.random() < density; //TODO generate a playable board, no isolated tile for example, no disadvantaged player ...
             }
         }
 
@@ -38,12 +32,10 @@ public class GameBoard {
     }
 
     private boolean containsTile(int line, int column) {
-        if(line < 0 || column < 0 || line >= nbLines || column >= nbColumns)
-            return false;
-        return tiles[line][column];
+        return !(line < 0 || column < 0 || line >= nbLines || column >= nbColumns) && tiles[line][column];
     }
 
-    public void dropTile(Position position){
+    void dropTile(Position position){
         this.dropTile(position.line,position.column);
     }
 
@@ -53,7 +45,7 @@ public class GameBoard {
         tiles[line][column] = false;
     }
 
-    void init(int nbPlayers) {
+    private void init(int nbPlayers) {
         generateTiles(nbPlayers,DENSITY);
     }
 
@@ -72,9 +64,7 @@ public class GameBoard {
             if(set[line].length != nbColumns)
                 throw new RuntimeException("Size of tile set does not match with the gameboard");
 
-            for(int column = 0; column < nbColumns; column ++)
-                tiles[line][column] = set[line][column];
-
+            System.arraycopy(set[line], 0, tiles[line], 0, nbColumns);
         }
     }
 
