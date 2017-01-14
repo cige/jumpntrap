@@ -55,7 +55,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
 
         // on efface l'écran
-        canvas.drawColor(ContextCompat.getColor(getContext(), R.color.emtpyColor));
+        canvas.drawColor(ContextCompat.getColor(getContext(), R.color.emptyColor));
 
         final Paint p = new Paint();
         p.setFlags(Paint.ANTI_ALIAS_FLAG);

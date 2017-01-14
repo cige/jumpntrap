@@ -16,7 +16,7 @@
             android:text="PLAY"
             android:textSize="75px"
             android:gravity="center"
-            android:textColor="@color/emtpyColor"/>
+            android:textColor="@color/emptyColor"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -32,7 +32,7 @@
             android:text="TRAINING"
             android:textSize="75px"
             android:gravity="center"
-            android:textColor="@color/emtpyColor"/>
+            android:textColor="@color/emptyColor"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -47,7 +47,7 @@
             android:text="HELP"
             android:textSize="75px"
             android:gravity="center"
-            android:textColor="@color/emtpyColor"/>
+            android:textColor="@color/emptyColor"/>
     </RelativeLayout>
 
 </LinearLayout>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="tileColor">#F4F4EF</color>
-    <color name="emtpyColor">#ACBEBE</color>
+    <color name="emptyColor">#ACBEBE</color>
     <color name="bottomPlayerColor">#A01D26</color>
     <color name="topPlayerColor">#20232A</color>
     <color name="bottomPlayerWaitingColor">#ACBEBE</color>
