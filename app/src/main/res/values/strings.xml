@@ -10,4 +10,10 @@
     <string name="players">Players</string>
     <string name="ready">Ready</string>
     <string name="leave">Leave</string>
-</resources>
+
+    <string name="about_text">
+    <![CDATA[
+    Author: Your name<br/><br/>Your description text, changelog, licences etc... ]]>
+    </string>
+
+    </resources>

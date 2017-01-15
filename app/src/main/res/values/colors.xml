@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="tileColor">#F4F4EF</color>
+    <color name="tileColor">#f7efe2</color>
     <color name="emptyColor">#ACBEBE</color>
     <color name="bottomPlayerColor">#A01D26</color>
     <color name="topPlayerColor">#20232A</color>
     <color name="bottomPlayerWaitingColor">#ACBEBE</color>
     <color name="topPlayerWaitingColor">#ACBEBE</color>
-    <color name="deathColor">#F4F4EF</color>
 
 </resources>

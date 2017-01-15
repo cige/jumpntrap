@@ -94,7 +94,7 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
                 continue;
 
             if(!player.isAlive())
-                paint.setColor(ContextCompat.getColor(getContext(), R.color.deathColor));
+                paint.setColor(ContextCompat.getColor(getContext(), R.color.tileColor));
             else if(game.isFirstPlayer(player))
                 paint.setColor(ContextCompat.getColor(getContext(), R.color.bottomPlayerColor));
             else if(game.isSecondPlayer(player))
