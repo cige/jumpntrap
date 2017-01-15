@@ -10,7 +10,7 @@ import com.google.android.gms.games.multiplayer.Participant;
 import com.jumpntrap.R;
 import com.jumpntrap.adapter.PlayerAdapter;
 import com.jumpntrap.adapter.PlayerItem;
-import com.jumpntrap.model.OneVSOneRemoteGame;
+import com.jumpntrap.games.OneVSOneRemoteGame;
 import com.jumpntrap.realtime.RematchMessage;
 
 import org.apache.commons.lang3.SerializationUtils;

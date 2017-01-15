@@ -25,7 +25,7 @@ import com.google.example.games.basegameutils.BaseGameUtils;
 import com.jumpntrap.R;
 import com.jumpntrap.dialog.RematchRemoteDialog;
 import com.jumpntrap.model.Game;
-import com.jumpntrap.model.OneVSOneRemoteGame;
+import com.jumpntrap.games.OneVSOneRemoteGame;
 import com.jumpntrap.model.Player;
 import com.jumpntrap.players.HumanPlayer;
 import com.jumpntrap.players.RemotePlayer;
@@ -76,8 +76,8 @@ public class QuickGameActivity extends GameActivity implements
             return;
         }
 
-        final int userScore = this.game.getUserScore();
-        final int opponentScore = this.game.getOpponentScore();
+        final int userScore = this.game.getFirstPlayerScore();
+        final int opponentScore = this.game.getSecondPlayerScore();
 
         final TextView scoreBottom = (TextView) findViewById(R.id.score_bottom);
         final TextView scoreTop = (TextView) findViewById(R.id.score_top);
@@ -173,7 +173,7 @@ public class QuickGameActivity extends GameActivity implements
         if (isHost) {
             humanPlayer = new HumanPlayer(this);
             remotePlayer = new RemotePlayer(googleApiClient, roomId, participants.get(1).getParticipantId());
-            game = new OneVSOneRemoteGame(humanPlayer, remotePlayer);
+            game = new OneVSOneRemoteGame(humanPlayer, remotePlayer, true);
         }
         else {
             humanPlayer = new HumanPlayer(this);
