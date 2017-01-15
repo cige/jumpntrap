@@ -38,4 +38,9 @@ public final class OneVSOneRemoteGame extends OneVSOneGame implements GameObserv
         return isHost ? p == player1 : p == player2;
     }
 
+    @Override
+    public final boolean isSecondPlayer(Player p){
+        return isHost ? p == player1 : p == player1;
+    }
+
 }

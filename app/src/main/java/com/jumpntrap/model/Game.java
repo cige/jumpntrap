@@ -70,10 +70,10 @@ public abstract class Game {
     public void start(boolean[][] tiles,int turn,int[] positions) {
 
         if(players.size() < nbPlayers)
-            throw new RuntimeException("The game require more players");
+            throw new RuntimeException("The activity_game require more players");
 
         if(players.size() > nbPlayers)
-            throw new RuntimeException("Too many players in the game");
+            throw new RuntimeException("Too many players in the activity_game");
 
         initGameBoard(tiles);
         initPlayersPositions(positions);
@@ -156,7 +156,7 @@ public abstract class Game {
     }
 
     /**
-     * A game isn't over if at least 2 players are still alive.
+     * A activity_game isn't over if at least 2 players are still alive.
      */
     private void checkIsOver() {
 

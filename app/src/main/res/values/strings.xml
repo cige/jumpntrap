@@ -1,19 +1,17 @@
 <resources>
     <string name="app_name">Jump\'n Trap</string>
-    <string name="one_player">1P</string>
-    <string name="quick_game">Quick game</string>
-    <string name="please_wait">Please wait...</string>
-    <string name="signin_error">There was an issue with sign in. Please try again later.</string>
-    <string name="game_problem">An error occurred while starting the game. Please try again.</string>
+    <string name="play">Play</string>
+    <string name="training">Training</string>
     <string name="help">Help</string>
-    <string name="icon_check">\u2713</string>
+    <string name="sign_in_error">There was an issue with sign in. Please try again later.</string>
     <string name="players">Players</string>
     <string name="ready">Ready</string>
     <string name="leave">Leave</string>
 
+
+    <string name="icon_check">\u2713</string>
     <string name="about_text">
     <![CDATA[
     Author: Your name<br/><br/>Your description text, changelog, licences etc... ]]>
     </string>
-
-    </resources>
+</resources>
