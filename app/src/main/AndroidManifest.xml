@@ -19,24 +19,22 @@
 
         <activity
             android:name=".activity.MenuActivity"
-            android:screenOrientation="sensorPortrait" />
-        <activity
-            android:name=".activity.HumanVSComputerActivity"
-            android:screenOrientation="sensorPortrait" />
-        <activity
-            android:name=".activity.QuickGameActivity"
-            android:screenOrientation="sensorPortrait" />
-        <activity
-            android:name=".activity.HelpActivity"
-            android:screenOrientation="sensorPortrait" />
-        <activity
-            android:name=".activity.NewMenuActivity"
             android:screenOrientation="sensorPortrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".activity.HumanVSComputerActivity"
+            android:screenOrientation="sensorPortrait" />
+        <activity
+            android:name=".activity.RemoteGameActivity"
+            android:screenOrientation="sensorPortrait" />
+        <activity
+            android:name=".activity.HelpActivity"
+            android:screenOrientation="sensorPortrait" />
     </application>
 
 </manifest>

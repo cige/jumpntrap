@@ -71,7 +71,7 @@ public final class RemotePlayer extends Player implements GameObserver {
         Log.d(TAG, "handleRealTimeMessageReceived");
 
         switch (game.getGameState()) {
-            // We have to init the game
+            // We have to init the activity_game
             case INITIAL:
                 Log.d(TAG, "INITIAL");
                 final GameConfigMessage gcm = SerializationUtils.deserialize(buff);

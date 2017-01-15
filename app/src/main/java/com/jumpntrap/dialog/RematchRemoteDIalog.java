@@ -105,9 +105,9 @@ public class RematchRemoteDialog {
         final PlayerItem playerItem = map.get(participant);
         playerItem.setText(playerItem.getText() + " " + context.getString(R.string.icon_check));
 
-        // The two players are ready : we can start a new game
+        // The two players are ready : we can start a new activity_game
         if (localParticipantReady && remoteParticipantReady) {
-            // Reset game for both
+            // Reset activity_game for both
             game.reset();
 
             if (isHost) {

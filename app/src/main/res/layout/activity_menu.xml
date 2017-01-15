@@ -1,55 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.jumpntrap.activity.MenuActivity">
+    android:orientation="vertical"
+    tools:context=".activity.MenuActivity">
 
-    <!-- Main screen -->
-    <LinearLayout
-        android:id="@+id/screen_main"
-        style="@style/LLScreen">
-        <Button
-            style="@style/MainScreenButton"
-            android:id="@+id/btn_one_player"
-            android:text="@string/one_player" />
-        <Button
-            style="@style/MainScreenButton"
-            android:id="@+id/btn_quick_game"
-            android:text="@string/quick_game" />
-        <Button
-            style="@style/MainScreenButton"
-            android:id="@+id/btn_help"
-            android:text="@string/help" />
-    </LinearLayout>
-
-    <!-- SIGN-IN SCREEN -->
-    <LinearLayout
-        android:id="@+id/screen_sign_in"
-        style="@style/LLScreen">
+    <RelativeLayout
+        android:id="@+id/play"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:background="@color/bottomPlayerColor"
+        android:layout_weight="1">
         <TextView
-            style="@style/GameTitle" />
-        <TextView
-            style="@style/GameBlurb" />
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/play"
+            android:textSize="75px"
+            android:textAllCaps="true"
+            android:gravity="center"
+            android:textColor="@color/emptyColor"/>
+    </RelativeLayout>
 
-        <Button
-            style="@style/MainScreenButton"
-            android:id="@+id/btn_one_player_2"
-            android:text="@string/one_player" />
-        <com.google.android.gms.common.SignInButton
-            style="@style/SignInButton"
-            android:id="@+id/btn_sign_in" />
-        <Button
-            style="@style/MainScreenButton"
-            android:id="@+id/btn_help_2"
-            android:text="@string/help" />
-    </LinearLayout>
-
-    <!-- Wait screen -->
-    <LinearLayout android:id="@+id/screen_wait" style="@style/LLScreen">
+    <RelativeLayout
+        android:id="@+id/training"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/tileColor"
+        android:layout_weight="1"
+        android:onClick="startOnePlayerActivity">
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/please_wait" />
-    </LinearLayout>
-</FrameLayout>
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/training"
+            android:textSize="75px"
+            android:textAllCaps="true"
+            android:gravity="center"
+            android:textColor="@color/emptyColor"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/help"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/topPlayerColor"
+        android:layout_weight="1">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/help"
+            android:textSize="75px"
+            android:textAllCaps="true"
+            android:gravity="center"
+            android:textColor="@color/emptyColor"/>
+    </RelativeLayout>
+
+</LinearLayout>

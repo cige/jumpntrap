@@ -33,12 +33,17 @@ import com.jumpntrap.util.RoomUtils;
 
 import java.util.List;
 
-public class QuickGameActivity extends GameActivity implements
+public class RemoteGameActivity extends GameActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         RoomUpdateListener, RoomStatusUpdateListener, RealTimeMessageReceivedListener {
-    private static final String TAG = "QuickGameActivity";
+
+    private static final String TAG = "RemoteGameActivity";
 
     private GoogleApiClient googleApiClient;
+    private boolean resolvingConnectionFailure = false;
+    private boolean autoStartSignInFlow = true;
+
+    private final static int RC_SIGN_IN = 9001;
 
     private List<Participant> participants;
     private String myId;
@@ -90,7 +95,7 @@ public class QuickGameActivity extends GameActivity implements
                 scoreTop.setText(String.valueOf(opponentScore));
 
                 dialog = new RematchRemoteDialog(
-                        QuickGameActivity.this,
+                        RemoteGameActivity.this,
                         googleApiClient,
                         remoteGame,
                         roomId,
@@ -114,7 +119,7 @@ public class QuickGameActivity extends GameActivity implements
     }
 
     private void createQuickMatch() {
-        // Quick-start a game with 1 randomly selected opponent
+        // Quick-start a activity_game with 1 randomly selected opponent
         final Bundle autoMatchCriteria = RoomConfig.createAutoMatchCriteria(1, 1, 0);
 
         final RoomConfig.Builder rtmConfigBuilder = RoomConfig.builder(this);
@@ -137,7 +142,7 @@ public class QuickGameActivity extends GameActivity implements
                 // we got the result from the "waiting room" UI.
                 if (resultCode == Activity.RESULT_OK) {
                     // ready to start playing
-                    Log.d(TAG, "Starting game");
+                    Log.d(TAG, "Starting activity_game");
                     showSpinner(false);
                     initGame();
                 }
@@ -169,7 +174,7 @@ public class QuickGameActivity extends GameActivity implements
     private void createPlayersAndGame() {
         HumanPlayer humanPlayer;
 
-        // Create players and game
+        // Create players and activity_game
         if (isHost) {
             humanPlayer = new HumanPlayer(this);
             remotePlayer = new RemotePlayer(googleApiClient, roomId, participants.get(1).getParticipantId());
@@ -182,7 +187,7 @@ public class QuickGameActivity extends GameActivity implements
             game = new OneVSOneRemoteGame(remotePlayer, humanPlayer, false);
         }
 
-        // Setup game
+        // Setup activity_game
         game.addObserver(remotePlayer);
         setGame(game);
         game.start();
@@ -200,7 +205,7 @@ public class QuickGameActivity extends GameActivity implements
     public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
         Log.d(TAG, "onRealTimeMessageReceived");
 
-        // Create game is not created yet
+        // Create activity_game is not created yet
         if (game == null) {
             createPlayersAndGame();
         }
@@ -218,7 +223,6 @@ public class QuickGameActivity extends GameActivity implements
         }
 
         roomId = room.getRoomId();
-        Log.d(TAG, "Nb part : " + room.getParticipantIds().size());
         showSpinner(false);
         RoomUtils.showWaitingRoom(this, room, googleApiClient);
     }
@@ -247,7 +251,6 @@ public class QuickGameActivity extends GameActivity implements
     @Override
     public void onRoomConnecting(Room room) {
         Log.d(TAG, "onRoomConnecting");
-        Log.d(TAG, "Nb part : " + room.getParticipantIds().size());
         updateRoom(room);
     }
 
@@ -270,7 +273,6 @@ public class QuickGameActivity extends GameActivity implements
     @Override
     public void onPeerJoined(Room room, List<String> list) {
         Log.d(TAG, "onPeerJoined");
-        Log.d(TAG, "Nb part : " + room.getParticipantIds().size());
         updateRoom(room);
     }
 
@@ -288,7 +290,7 @@ public class QuickGameActivity extends GameActivity implements
         participants = room.getParticipants();
         myId = room.getParticipantId(Games.Players.getCurrentPlayerId(googleApiClient));
 
-        // Save room ID if its not initialized in onRoomCreated() so we can leave cleanly before the game starts
+        // Save room ID if its not initialized in onRoomCreated() so we can leave cleanly before the activity_game starts
         if (roomId == null) {
             roomId = room.getRoomId();
         }
@@ -333,28 +335,25 @@ public class QuickGameActivity extends GameActivity implements
         googleApiClient.connect();
     }
 
-    private boolean mResolvingConnectionFailure = false;
-    private boolean mAutoStartSignInFlow = true;
-
-    private final static int RC_SIGN_IN = 9001;
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d(TAG, "onConnectionFailed() called, result: " + connectionResult);
 
-        if (mResolvingConnectionFailure) {
+        if (resolvingConnectionFailure) {
             Log.d(TAG, "onConnectionFailed() ignoring connection failure; already resolving.");
             return;
         }
 
-        if (mAutoStartSignInFlow) {
-            mAutoStartSignInFlow = false;
-            mResolvingConnectionFailure = BaseGameUtils.resolveConnectionFailure(
+        if (autoStartSignInFlow) {
+            autoStartSignInFlow = false;
+            resolvingConnectionFailure = BaseGameUtils.resolveConnectionFailure(
                     this,
                     googleApiClient,
                     connectionResult,
                     RC_SIGN_IN,
-                    getString(R.string.signin_error)
+                    getString(R.string.sign_in_error)
             );
         }
     }
+
 }

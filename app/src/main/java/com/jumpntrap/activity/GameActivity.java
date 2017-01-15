@@ -33,7 +33,7 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
             getActionBar().hide();
         }
 
-        this.setContentView(R.layout.game);
+        this.setContentView(R.layout.activity_game);
 
         view = new GameView(this);
         LinearLayout boardLayout = (LinearLayout)findViewById(R.id.board);
