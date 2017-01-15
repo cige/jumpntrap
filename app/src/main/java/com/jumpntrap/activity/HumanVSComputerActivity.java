@@ -2,7 +2,7 @@ package com.jumpntrap.activity;
 
 import android.os.Bundle;
 
-import com.jumpntrap.model.OneVSOneGame;
+import com.jumpntrap.games.OneVSOneGame;
 import com.jumpntrap.players.HumanPlayer;
 import com.jumpntrap.players.RandomPlayer;
 

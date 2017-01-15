@@ -22,7 +22,7 @@ public abstract class Game {
 
     private int turn;
 
-    Game(int nbPlayers) {
+    public Game(int nbPlayers) {
         this.nbPlayers = nbPlayers;
         gameBoard = new GameBoard(NB_LINES, NB_COLUMNS);
         players = new ArrayList<>();
@@ -30,7 +30,7 @@ public abstract class Game {
         state = GameState.INITIAL;
     }
 
-    final void addPlayer(Player player){
+    protected final void addPlayer(Player player){
         players.add(player);
         player.setGame(this);
     }

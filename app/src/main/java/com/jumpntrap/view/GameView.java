@@ -11,7 +11,7 @@ import android.view.SurfaceView;
 import com.jumpntrap.R;
 import com.jumpntrap.model.Game;
 import com.jumpntrap.model.GameBoard;
-import com.jumpntrap.model.OneVSOneGame;
+import com.jumpntrap.games.OneVSOneGame;
 import com.jumpntrap.model.Player;
 import com.jumpntrap.model.Position;
 
@@ -95,10 +95,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
 
             if(!player.isAlive())
                 paint.setColor(ContextCompat.getColor(getContext(), R.color.deathColor));
-            else if(game.isUserPlayer(player))
+            else if(game.isFirstPlayer(player))
                 paint.setColor(ContextCompat.getColor(getContext(), R.color.bottomPlayerColor));
-            else
+            else if(game.isSecondPlayer(player))
                 paint.setColor(ContextCompat.getColor(getContext(), R.color.topPlayerColor));
+            else
+                continue;
 
             int hreminders = 0;
             int wreminders = 0;

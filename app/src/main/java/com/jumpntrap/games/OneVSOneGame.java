@@ -1,9 +1,15 @@
-package com.jumpntrap.model;
+package com.jumpntrap.games;
 
+
+import com.jumpntrap.model.Direction;
+import com.jumpntrap.model.Game;
+import com.jumpntrap.model.GameObserver;
+import com.jumpntrap.model.Player;
 
 public class OneVSOneGame extends Game implements GameObserver {
-    Player player1;
-    Player player2;
+
+    final Player player1;
+    final Player player2;
 
     int player1Score = 0;
     int player2Score = 0;
@@ -17,15 +23,19 @@ public class OneVSOneGame extends Game implements GameObserver {
         this.addObserver(this);
     }
 
-    public int getUserScore(){
+    public int getFirstPlayerScore(){
         return player1Score;
     }
 
-    public int getOpponentScore(){
+    public int getSecondPlayerScore(){
         return player2Score;
     }
 
-    public boolean isUserPlayer(Player p){
+    public boolean isFirstPlayer(Player p){
+        return p == player1;
+    }
+
+    public boolean isSecondPlayer(Player p){
         return p == player2;
     }
 

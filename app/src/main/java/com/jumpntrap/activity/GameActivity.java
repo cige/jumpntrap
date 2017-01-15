@@ -14,7 +14,7 @@ import com.jumpntrap.R;
 import com.jumpntrap.model.Direction;
 import com.jumpntrap.model.Game;
 import com.jumpntrap.model.GameObserver;
-import com.jumpntrap.model.OneVSOneGame;
+import com.jumpntrap.games.OneVSOneGame;
 import com.jumpntrap.model.Player;
 import com.jumpntrap.players.HumanPlayer;
 import com.jumpntrap.view.GameView;
@@ -29,8 +29,8 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
 
         //removing the action bar
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR);
-        if (getActionBar() != null) {
-            getActionBar().hide();
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().hide();
         }
 
         this.setContentView(R.layout.activity_game);
@@ -65,8 +65,8 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
             return;
         }
 
-        final int userScore = this.game.getUserScore();
-        final int opponentScore = this.game.getOpponentScore();
+        final int userScore = this.game.getFirstPlayerScore();
+        final int opponentScore = this.game.getSecondPlayerScore();
 
         final TextView scoreBottom = (TextView) findViewById(R.id.score_bottom);
         final TextView scoreTop = (TextView) findViewById(R.id.score_top);
@@ -98,6 +98,7 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
             return;
 
         final OneVSOneGame g = this.game;
+        final Player nextPlayer = this.game.nextPlayer();
 
         final LinearLayout topBar = (LinearLayout) findViewById(R.id.topBar);
         final LinearLayout bottomBar = (LinearLayout) findViewById(R.id.bottomBar);
@@ -106,11 +107,11 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
             @Override
             public void run() {
 
-                if(g.isUserPlayer(g.nextPlayer())){
+                if(g.isFirstPlayer(nextPlayer)){
                     bottomBar.setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.bottomPlayerColor));
                     topBar.setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.topPlayerWaitingColor));
                 }
-                else{
+                else if(g.isSecondPlayer(nextPlayer)){
                     bottomBar.setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.bottomPlayerWaitingColor));
                     topBar.setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.topPlayerColor));
                 }
@@ -133,11 +134,11 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
             @Override
             public void run() {
 
-        if(g.isUserPlayer(player)){
+        if(g.isFirstPlayer(player)){
             bottomBar.setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.bottomPlayerWaitingColor));
             topBar.setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.topPlayerColor));
         }
-        else{
+        else if(g.isSecondPlayer(player)){
             bottomBar.setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.bottomPlayerColor));
             topBar.setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.topPlayerWaitingColor));
         }}});
