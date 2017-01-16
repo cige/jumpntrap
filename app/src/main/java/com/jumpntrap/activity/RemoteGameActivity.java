@@ -6,13 +6,14 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
+import com.google.android.gms.games.GamesActivityResultCodes;
 import com.google.android.gms.games.GamesStatusCodes;
 import com.google.android.gms.games.multiplayer.Participant;
 import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
@@ -23,17 +24,19 @@ import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListene
 import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
 import com.google.example.games.basegameutils.BaseGameUtils;
 import com.jumpntrap.R;
+import com.jumpntrap.dialog.OpponentLeftDialog;
 import com.jumpntrap.dialog.RematchRemoteDialog;
-import com.jumpntrap.model.Game;
 import com.jumpntrap.games.OneVSOneRemoteGame;
+import com.jumpntrap.model.Game;
 import com.jumpntrap.model.Player;
 import com.jumpntrap.players.HumanPlayer;
 import com.jumpntrap.players.RemotePlayer;
 import com.jumpntrap.util.RoomUtils;
+import com.jumpntrap.util.ScreenUtils;
 
 import java.util.List;
 
-public class RemoteGameActivity extends GameActivity implements
+public final class RemoteGameActivity extends GameActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         RoomUpdateListener, RoomStatusUpdateListener, RealTimeMessageReceivedListener {
 
@@ -52,10 +55,11 @@ public class RemoteGameActivity extends GameActivity implements
     private RemotePlayer remotePlayer = null;
     private boolean isHost = false;
 
-    private RematchRemoteDialog dialog = null;
+    private RematchRemoteDialog rematchDialog = null;
+    private boolean wantsToLeave = false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         showGameBoard(View.GONE);
         showSpinner(true);
@@ -76,7 +80,27 @@ public class RemoteGameActivity extends GameActivity implements
     }
 
     @Override
-    public void onGameOver(Game game, Player winner) {
+    protected void onStop() {
+        leaveRoom();
+        super.onStop();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent e) {
+        Log.d(TAG, "onKeyDown");
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            Log.d(TAG, "onKeyDown : button back pressed");
+
+            wantsToLeave = true;
+            leaveRoom();
+            return true;
+        }
+
+        return super.onKeyDown(keyCode, e);
+    }
+
+    @Override
+    public void onGameOver(final Game game, final Player winner) {
         if (this.game != game) {
             return;
         }
@@ -94,7 +118,7 @@ public class RemoteGameActivity extends GameActivity implements
                 scoreBottom.setText(String.valueOf(userScore));
                 scoreTop.setText(String.valueOf(opponentScore));
 
-                dialog = new RematchRemoteDialog(
+                rematchDialog = new RematchRemoteDialog(
                         RemoteGameActivity.this,
                         googleApiClient,
                         remoteGame,
@@ -103,7 +127,7 @@ public class RemoteGameActivity extends GameActivity implements
                         participants.get(isHost ? 1 : 0),
                         isHost
                 );
-                dialog.show();
+                rematchDialog.show();
             }
         });
     }
@@ -114,12 +138,12 @@ public class RemoteGameActivity extends GameActivity implements
         findViewById(R.id.bottomBar).setVisibility(view);
     }
 
-    private void showSpinner(boolean show) {
+    private void showSpinner(final boolean show) {
         findViewById(R.id.loading_panel).setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     private void createQuickMatch() {
-        // Quick-start a activity_game with 1 randomly selected opponent
+        // Quick-start a game with 1 randomly selected opponent
         final Bundle autoMatchCriteria = RoomConfig.createAutoMatchCriteria(1, 1, 0);
 
         final RoomConfig.Builder rtmConfigBuilder = RoomConfig.builder(this);
@@ -128,30 +152,27 @@ public class RemoteGameActivity extends GameActivity implements
                 .setAutoMatchCriteria(autoMatchCriteria);
 
         // Keep on screen
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        ScreenUtils.keepScreenOn(getWindow());
 
         // Launch waiting room
         Games.RealTimeMultiplayer.create(googleApiClient, rtmConfigBuilder.build());
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
         Log.d(TAG, "onActivityResult");
+
         switch (requestCode) {
             case RoomUtils.RC_WAITING_ROOM:
-                // we got the result from the "waiting room" UI.
+                // Result from waiting room
                 if (resultCode == Activity.RESULT_OK) {
-                    // ready to start playing
-                    Log.d(TAG, "Starting activity_game");
+                    Log.d(TAG, "Starting game");
                     showSpinner(false);
                     initGame();
                 }
-                /*
-                else if (resultCode == GamesActivityResultCodes.RESULT_LEFT_ROOM) {
+                else if (resultCode == GamesActivityResultCodes.RESULT_LEFT_ROOM || resultCode == Activity.RESULT_CANCELED) {
+                    leaveRoom();
                 }
-                else if (resultCode == Activity.RESULT_CANCELED) {
-                }
-                */
                 break;
         }
         super.onActivityResult(requestCode, resultCode, data);
@@ -174,7 +195,7 @@ public class RemoteGameActivity extends GameActivity implements
     private void createPlayersAndGame() {
         HumanPlayer humanPlayer;
 
-        // Create players and activity_game
+        // Create players and game
         if (isHost) {
             humanPlayer = new HumanPlayer(this);
             remotePlayer = new RemotePlayer(googleApiClient, roomId, participants.get(1).getParticipantId());
@@ -187,7 +208,7 @@ public class RemoteGameActivity extends GameActivity implements
             game = new OneVSOneRemoteGame(remotePlayer, humanPlayer, false);
         }
 
-        // Setup activity_game
+        // Setup game
         game.addObserver(remotePlayer);
         setGame(game);
         game.start();
@@ -195,27 +216,37 @@ public class RemoteGameActivity extends GameActivity implements
         showGameBoard(View.VISIBLE);
     }
 
-    private void updateRoom(Room room) {
+    private void updateRoom(final Room room) {
         if (room != null) {
             participants = room.getParticipants();
         }
     }
 
+    private void leaveRoom() {
+        ScreenUtils.keepScreenOff(getWindow());
+        if (roomId != null) {
+            Games.RealTimeMultiplayer.leave(googleApiClient, this, roomId);
+            roomId = null;
+        }
+
+        finish();
+    }
+
     @Override
-    public void onRealTimeMessageReceived(RealTimeMessage realTimeMessage) {
+    public void onRealTimeMessageReceived(final RealTimeMessage realTimeMessage) {
         Log.d(TAG, "onRealTimeMessageReceived");
 
-        // Create activity_game is not created yet
+        // Create game is not created yet
         if (game == null) {
             createPlayersAndGame();
         }
 
         byte[] buff = realTimeMessage.getMessageData();
-        remotePlayer.handleRealTimeMessageReceived(game, buff, dialog);
+        remotePlayer.handleRealTimeMessageReceived(game, buff, rematchDialog);
     }
 
     @Override
-    public void onRoomCreated(int statusCode, Room room) {
+    public void onRoomCreated(final int statusCode, final Room room) {
         Log.d(TAG, "onRoomCreated");
         if (statusCode != GamesStatusCodes.STATUS_OK) {
             Log.e(TAG, "*** Error: onRoomCreated, status " + statusCode);
@@ -228,17 +259,17 @@ public class RemoteGameActivity extends GameActivity implements
     }
 
     @Override
-    public void onJoinedRoom(int statusCode, Room room) {
+    public void onJoinedRoom(final int statusCode, final Room room) {
         Log.d(TAG, "onJoinedRoom");
     }
 
     @Override
-    public void onLeftRoom(int statusCode, String s) {
+    public void onLeftRoom(final int statusCode, final String s) {
         Log.d(TAG, "onLeftRoom");
     }
 
     @Override
-    public void onRoomConnected(int statusCode, Room room) {
+    public void onRoomConnected(final int statusCode, final Room room) {
         Log.d(TAG, "onRoomConnected");
         if (statusCode != GamesStatusCodes.STATUS_OK) {
             Log.e(TAG, "*** Error: onRoomConnected, status " + statusCode);
@@ -249,101 +280,116 @@ public class RemoteGameActivity extends GameActivity implements
     }
 
     @Override
-    public void onRoomConnecting(Room room) {
+    public void onRoomConnecting(final Room room) {
         Log.d(TAG, "onRoomConnecting");
         updateRoom(room);
     }
 
     @Override
-    public void onRoomAutoMatching(Room room) {
+    public void onRoomAutoMatching(final Room room) {
         Log.d(TAG, "onRoomAutoMatching");
         updateRoom(room);
     }
 
     @Override
-    public void onPeerInvitedToRoom(Room room, List<String> list) {
+    public void onPeerInvitedToRoom(final Room room, final List<String> list) {
         Log.d(TAG, "onPeerInvitedToRoom");
     }
 
     @Override
-    public void onPeerDeclined(Room room, List<String> list) {
+    public void onPeerDeclined(final Room room, final List<String> list) {
         Log.d(TAG, "onPeerInvitedToRoom");
     }
 
     @Override
-    public void onPeerJoined(Room room, List<String> list) {
+    public void onPeerJoined(final Room room, final List<String> list) {
         Log.d(TAG, "onPeerJoined");
         updateRoom(room);
     }
 
     @Override
-    public void onPeerLeft(Room room, List<String> list) {
+    public void onPeerLeft(final Room room, final List<String> list) {
         Log.d(TAG, "onPeerLeft");
         updateRoom(room);
     }
 
     @Override
-    public void onConnectedToRoom(Room room) {
+    public void onConnectedToRoom(final Room room) {
         Log.d(TAG, "onConnectedToRoom");
 
         // Get participants and my ID
         participants = room.getParticipants();
         myId = room.getParticipantId(Games.Players.getCurrentPlayerId(googleApiClient));
 
-        // Save room ID if its not initialized in onRoomCreated() so we can leave cleanly before the activity_game starts
+        // Save room ID if its not initialized in onRoomCreated() so we can leave cleanly before the game starts
         if (roomId == null) {
             roomId = room.getRoomId();
         }
     }
 
     @Override
-    public void onDisconnectedFromRoom(Room room) {
+    public void onDisconnectedFromRoom(final Room room) {
         Log.d(TAG, "onDisconnectedFromRoom");
-        roomId = null;
+
+        if (wantsToLeave) {
+            leaveRoom();
+        }
+        // The opponent left the game
+        else {
+            // Dismiss rematch dialog if needed
+            if (rematchDialog != null) {
+                rematchDialog.dismiss();
+            }
+
+            // Show opponent left dialog
+            new OpponentLeftDialog(this).show();
+        }
     }
 
     @Override
-    public void onPeersConnected(Room room, List<String> list) {
+    public void onPeersConnected(final Room room, final List<String> list) {
         Log.d(TAG, "onPeersConnected");
         updateRoom(room);
     }
 
     @Override
-    public void onPeersDisconnected(Room room, List<String> list) {
+    public void onPeersDisconnected(final Room room, final List<String> list) {
         Log.d(TAG, "onPeersDisconnected");
         updateRoom(room);
     }
 
     @Override
-    public void onP2PConnected(String s) {
+    public void onP2PConnected(final String s) {
         Log.d(TAG, "onP2PConnected");
     }
 
     @Override
-    public void onP2PDisconnected(String s) {
+    public void onP2PDisconnected(final String s) {
         Log.d(TAG, "onP2PDisconnected");
     }
 
     @Override
-    public void onConnected(@Nullable Bundle bundle) {
+    public void onConnected(@Nullable final Bundle bundle) {
         Log.d(TAG, "onConnected() called. Sign in successful!");
         createQuickMatch();
     }
 
     @Override
-    public void onConnectionSuspended(int statusCode) {
+    public void onConnectionSuspended(final int statusCode) {
         googleApiClient.connect();
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+    public void onConnectionFailed(@NonNull final ConnectionResult connectionResult) {
         Log.d(TAG, "onConnectionFailed() called, result: " + connectionResult);
 
+        // Already solved
         if (resolvingConnectionFailure) {
             Log.d(TAG, "onConnectionFailed() ignoring connection failure; already resolving.");
             return;
         }
 
+        // Try to resolve if connection failed
         if (autoStartSignInFlow) {
             autoStartSignInFlow = false;
             resolvingConnectionFailure = BaseGameUtils.resolveConnectionFailure(

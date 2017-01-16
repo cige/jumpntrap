@@ -6,12 +6,13 @@
     <string name="sign_in_error">There was an issue with sign in. Please try again later.</string>
     <string name="players">Players</string>
     <string name="ready">Ready</string>
-    <string name="leave">Leave</string>
-
-
+    <string name="rematch">Rematch</string>
     <string name="icon_check">\u2713</string>
+    <string name="zero_value">0</string>
+    <string name="opponent_left">Your opponent left the game</string>
+    <string name="ok">OK</string>
     <string name="about_text">
     <![CDATA[
-    Author: Your name<br/><br/>Your description text, changelog, licences etc... ]]>
+    Author: Your name<br/><br/>Your description text, changelog, licences, etc.]]>
     </string>
 </resources>

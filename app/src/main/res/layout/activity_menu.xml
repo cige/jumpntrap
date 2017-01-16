@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@string/play"
-            android:textSize="75px"
+            android:textSize="75sp"
             android:textAllCaps="true"
             android:gravity="center"
             android:textColor="@color/emptyColor"/>
@@ -28,13 +28,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/tileColor"
-        android:layout_weight="1"
-        android:onClick="startOnePlayerActivity">
+        android:layout_weight="1">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@string/training"
-            android:textSize="75px"
+            android:textSize="75sp"
             android:textAllCaps="true"
             android:gravity="center"
             android:textColor="@color/emptyColor"/>
@@ -50,7 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@string/help"
-            android:textSize="75px"
+            android:textSize="75sp"
             android:textAllCaps="true"
             android:gravity="center"
             android:textColor="@color/emptyColor"/>

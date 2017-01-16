@@ -5,7 +5,7 @@ import java.io.Serializable;
 
 public final class RematchMessage implements Serializable {
 
-    private boolean wantsToRematch;
+    final private boolean wantsToRematch;
 
     public RematchMessage(final boolean wantsToRematch) {
         this.wantsToRematch = wantsToRematch;
@@ -14,4 +14,5 @@ public final class RematchMessage implements Serializable {
     public final boolean isWantsToRematch() {
         return wantsToRematch;
     }
+
 }

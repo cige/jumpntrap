@@ -96,11 +96,13 @@ public class MenuActivity extends AppCompatActivity implements
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Log.d(TAG, "onConnectionFailed");
 
+        // Already solved
         if (resolvingConnectionFailure) {
             Log.d(TAG, "onConnectionFailed : ignoring connection failure; already resolving.");
             return;
         }
 
+        // Try to resolve if connection failed
         if (autoStartSignInFlow) {
             autoStartSignInFlow = false;
             resolvingConnectionFailure = BaseGameUtils.resolveConnectionFailure(

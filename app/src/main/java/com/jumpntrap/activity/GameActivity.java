@@ -1,20 +1,19 @@
 package com.jumpntrap.activity;
 
 import android.app.ActionBar;
-import android.content.DialogInterface;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.jumpntrap.R;
+import com.jumpntrap.dialog.RematchLocalDialog;
+import com.jumpntrap.games.OneVSOneGame;
 import com.jumpntrap.model.Direction;
 import com.jumpntrap.model.Game;
 import com.jumpntrap.model.GameObserver;
-import com.jumpntrap.games.OneVSOneGame;
 import com.jumpntrap.model.Player;
 import com.jumpntrap.players.HumanPlayer;
 import com.jumpntrap.view.GameView;
@@ -77,16 +76,7 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
                 scoreBottom.setText(String.valueOf(userScore));
                 scoreTop.setText(String.valueOf(opponentScore));
 
-                AlertDialog dialog = new AlertDialog.Builder(GameActivity.this).create();
-                dialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Rematch",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                game.restart();
-                            }
-                        });
-
-                dialog.show();
+                new RematchLocalDialog(GameActivity.this, (OneVSOneGame) game).show();
             }
         });
     }

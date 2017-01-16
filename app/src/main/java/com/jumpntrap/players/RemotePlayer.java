@@ -11,6 +11,7 @@ import com.jumpntrap.model.GameObserver;
 import com.jumpntrap.model.Player;
 import com.jumpntrap.realtime.GameConfigMessage;
 import com.jumpntrap.realtime.MoveMessage;
+import com.jumpntrap.realtime.RematchMessage;
 
 import org.apache.commons.lang3.SerializationUtils;
 
@@ -59,8 +60,6 @@ public final class RemotePlayer extends Player implements GameObserver {
     @Override
     public void onGameOver(Game game, Player winner) {
         Log.d(TAG, "onGameOver");
-
-
     }
 
     public void setHost(boolean host) {
@@ -71,7 +70,7 @@ public final class RemotePlayer extends Player implements GameObserver {
         Log.d(TAG, "handleRealTimeMessageReceived");
 
         switch (game.getGameState()) {
-            // We have to init the activity_game
+            // We have to init the game
             case INITIAL:
                 Log.d(TAG, "INITIAL");
                 final GameConfigMessage gcm = SerializationUtils.deserialize(buff);
@@ -84,9 +83,12 @@ public final class RemotePlayer extends Player implements GameObserver {
                 game.handleMove(mm.getDirection(), this);
                 break;
 
-            case GAMEOVER:
+            case GAME_OVER:
                 Log.d(TAG, "GAME OVER");
-                dialog.setRemotePlayerTextAsReady();
+                final RematchMessage rm = SerializationUtils.deserialize(buff);
+                if (rm.isWantsToRematch()) {
+                    dialog.setRemotePlayerTextAsReady();
+                }
         }
     }
 }

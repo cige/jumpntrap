@@ -10,7 +10,7 @@
         android:orientation="vertical"
         android:layout_below="@+id/topBar"
         android:layout_above="@+id/bottomBar"
-        android:gravity="center"></LinearLayout>
+        android:gravity="center" />
 
     <LinearLayout
         android:id="@+id/topBar"
@@ -23,8 +23,8 @@
             android:id="@+id/score_top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0"
-            android:textSize="25dp"
+            android:text="@string/zero_value"
+            android:textSize="25sp"
             android:textColor="#88ffffff"
             android:textStyle="normal|bold" />
     </LinearLayout>
@@ -40,8 +40,8 @@
             android:id="@+id/score_bottom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="0"
-            android:textSize="25dp"
+            android:text="@string/zero_value"
+            android:textSize="25sp"
             android:textColor="#88ffffff"
             android:textStyle="normal|bold" />
     </LinearLayout>
