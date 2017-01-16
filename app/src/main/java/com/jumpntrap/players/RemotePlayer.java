@@ -62,7 +62,7 @@ public final class RemotePlayer extends Player implements GameObserver {
      * @param game the game.
      */
     @Override
-    public void onGameStarted(Game game) {
+    public void onGameStarted(final Game game) {
         Log.d(TAG, "onGameStarted");
         if (isHost)
             return;
@@ -80,7 +80,7 @@ public final class RemotePlayer extends Player implements GameObserver {
      * @param move the move played.
      */
     @Override
-    public void onMovedPlayed(Game game, Player player, Direction move) {
+    public void onMovedPlayed(final Game game, final Player player, final Direction move) {
         Log.d(TAG, "onMovedPlayed");
 
         if(player == this)
@@ -99,7 +99,7 @@ public final class RemotePlayer extends Player implements GameObserver {
      * @param winner the player who won.
      */
     @Override
-    public void onGameOver(Game game, Player winner) {
+    public void onGameOver(final Game game, final Player winner) {
         Log.d(TAG, "onGameOver");
     }
 

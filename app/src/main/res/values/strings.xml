@@ -15,4 +15,11 @@
     <![CDATA[
     Author: Your name<br/><br/>Your description text, changelog, licences, etc.]]>
     </string>
+
+    <!-- List of achievements IDs -->
+    <string name="event_first_game">CgkIgJq00ZsFEAIQBA</string>
+    <string name="event_addict">CgkIgJq00ZsFEAIQBQ</string>
+    <string name="event_nolife">CgkIgJq00ZsFEAIQBg</string>
+    <string name="event_pro">CgkIgJq00ZsFEAIQBw</string>
+    <string name="event_noob">CgkIgJq00ZsFEAIQCA</string>
 </resources>

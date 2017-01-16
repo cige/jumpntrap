@@ -88,6 +88,11 @@ public final class RemoteGameActivity extends GameActivity implements
     private RemotePlayer remotePlayer = null;
 
     /**
+     * Human player (= local player).
+     */
+    private HumanPlayer humanPlayer = null;
+
+    /**
      * Flag to indicate if the player is the host.
      */
     private boolean isHost = false;
@@ -101,6 +106,16 @@ public final class RemoteGameActivity extends GameActivity implements
      * Flag to indicate if the player wants to leave the game.
      */
     private boolean wantsToLeave = false;
+
+    /**
+     * Number of won games in a row.
+     */
+    private int nbConsecutiveGamesWon = 0;
+
+    /**
+     * Number of lost games in a row.
+     */
+    private int nbConsecutiveGamesLost = 0;
 
     /**
      * Create the activity.
@@ -163,6 +178,7 @@ public final class RemoteGameActivity extends GameActivity implements
      */
     @Override
     public void onGameOver(final Game game, final Player winner) {
+        Log.d(TAG, "onGameOver");
         if (this.game != game) {
             return;
         }
@@ -192,6 +208,33 @@ public final class RemoteGameActivity extends GameActivity implements
                 rematchDialog.show();
             }
         });
+
+        // Unlock achievements
+        Log.d(TAG, "onGameOver : unlock achievements");
+        Games.Achievements.unlock(googleApiClient, getString(R.string.event_first_game));
+        Games.Achievements.increment(googleApiClient, getString(R.string.event_addict), 1);
+        Games.Achievements.increment(googleApiClient, getString(R.string.event_nolife), 1);
+
+        // The local player wins
+        if (winner == humanPlayer) {
+            nbConsecutiveGamesLost = 0;
+            ++nbConsecutiveGamesWon;
+
+            // Three games in a row won
+            if (nbConsecutiveGamesWon == 3) {
+                Games.Achievements.unlock(googleApiClient, getString(R.string.event_pro));
+            }
+        }
+        // Reset counter
+        else {
+            nbConsecutiveGamesWon = 0;
+            ++nbConsecutiveGamesLost;
+
+            // Three games in a row lost
+            if (nbConsecutiveGamesLost == 3) {
+                Games.Achievements.unlock(googleApiClient, getString(R.string.event_noob));
+            }
+        }
     }
 
     /**
@@ -279,8 +322,6 @@ public final class RemoteGameActivity extends GameActivity implements
      * Create players and game instances.
      */
     private void createPlayersAndGame() {
-        HumanPlayer humanPlayer;
-
         // Create players and game
         if (isHost) {
             humanPlayer = new HumanPlayer(this);
