@@ -1,18 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent" >
+    android:layout_height="wrap_content"
+    android:padding="12dp" >
 
-    <RelativeLayout
-        android:layout_width="fill_parent"
+    <TextView
+        android:id="@+id/about_text_view"
+        android:text="@string/about_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/btn_achievements"
+        android:text="@string/see_achievements"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="12dp" >
+        android:layout_marginTop="48dp"
+        android:layout_below="@+id/about_text_view"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
-        <TextView
-            android:id="@+id/about_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-
-    </RelativeLayout>
-
-</ScrollView>
+</RelativeLayout>

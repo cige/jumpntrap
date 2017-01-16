@@ -11,10 +11,9 @@
     <string name="zero_value">0</string>
     <string name="opponent_left">Your opponent left the game</string>
     <string name="ok">OK</string>
-    <string name="about_text">
-    <![CDATA[
-    Author: Your name<br/><br/>Your description text, changelog, licences, etc.]]>
-    </string>
+    <string name="about_text">Jump\'n Trap is a board game where you have to jump from a tile to another to trap your opponent.</string>
+    <string name="see_achievements">See achievements</string>
+    <string name="network_not_available">Network not available</string>
 
     <!-- List of achievements IDs -->
     <string name="event_first_game">CgkIgJq00ZsFEAIQBA</string>

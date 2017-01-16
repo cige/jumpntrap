@@ -8,12 +8,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.BaseGameUtils;
 import com.jumpntrap.R;
+import com.jumpntrap.util.ConnectionUtils;
 
 /**
  * MenuActivity defines the main activity of the application.
@@ -100,7 +102,13 @@ public final class MenuActivity extends AppCompatActivity implements
     public void onClick(final View view) {
         switch (view.getId()) {
             case R.id.play:
-                startActivity(new Intent(this, RemoteGameActivity.class));
+                // We can start the remote game if internet connection is available
+                if (ConnectionUtils.isInternetConnectionAvailable(this)) {
+                    startActivity(new Intent(this, RemoteGameActivity.class));
+                }
+                else {
+                    Toast.makeText(this, getString(R.string.network_not_available), Toast.LENGTH_LONG).show();
+                }
                 break;
 
             case R.id.training:

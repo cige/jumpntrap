@@ -5,20 +5,23 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.BaseGameUtils;
 import com.jumpntrap.R;
+import com.jumpntrap.util.ConnectionUtils;
 
 /**
  * HelpActivity defines an activity to show details of the game.
  */
 public final class HelpActivity extends AppCompatActivity implements
-        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+        View.OnClickListener {
     /**
      * A tag for debug purpose.
      */
@@ -64,25 +67,7 @@ public final class HelpActivity extends AppCompatActivity implements
         }
 
         setContentView(R.layout.activity_help);
-
-        final TextView aboutTextView = (TextView) findViewById(R.id.about_text_view);
-
-        final String aboutText = getString(R.string.about_text);
-        aboutTextView.setText(aboutText);
-
-
-        // Create the Google Api Client with access to Games
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(Games.API).addScope(Games.SCOPE_GAMES)
-                .build();
-
-        // Connect client if needed
-        if (!googleApiClient.isConnected()) {
-            Log.d(TAG, "onCreate : connecting client.");
-            googleApiClient.connect();
-        }
+        findViewById(R.id.btn_achievements).setOnClickListener(this);
     }
 
     /**
@@ -91,7 +76,7 @@ public final class HelpActivity extends AppCompatActivity implements
      */
     @Override
     public void onConnected(@Nullable final Bundle bundle) {
-        startActivityForResult(Games.Achievements.getAchievementsIntent(googleApiClient), REQUEST_ACHIEVEMENTS);
+        startAchievementsActivity();
     }
 
     /**
@@ -128,6 +113,49 @@ public final class HelpActivity extends AppCompatActivity implements
                     RC_SIGN_IN,
                     getString(R.string.sign_in_error)
             );
+        }
+    }
+
+    /**
+     * Callback when a click event is triggered.
+     * @param view the view to handle.
+     */
+    @Override
+    public void onClick(final View view) {
+        switch (view.getId()) {
+            case R.id.btn_achievements:
+                // We can connect only if an internet connection is available
+                if (ConnectionUtils.isInternetConnectionAvailable(this)) {
+                    if (googleApiClient == null) {
+                        // Create the Google Api Client with access to Games
+                        googleApiClient = new GoogleApiClient.Builder(this)
+                                .addConnectionCallbacks(this)
+                                .addOnConnectionFailedListener(this)
+                                .addApi(Games.API).addScope(Games.SCOPE_GAMES)
+                                .build();
+                    }
+
+                    // Connect client if needed
+                    if (!googleApiClient.isConnected()) {
+                        Log.d(TAG, "onCreate : connecting client.");
+                        googleApiClient.connect();
+                    }
+
+                    startAchievementsActivity();
+                }
+                else {
+                    Toast.makeText(this, getString(R.string.network_not_available), Toast.LENGTH_LONG).show();
+                }
+                break;
+        }
+    }
+
+    /**
+     * Starts the achievements activity.
+     */
+    private void startAchievementsActivity() {
+        if (googleApiClient.isConnected()) {
+            startActivityForResult(Games.Achievements.getAchievementsIntent(googleApiClient), REQUEST_ACHIEVEMENTS);
         }
     }
 }
