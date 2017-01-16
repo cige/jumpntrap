@@ -15,7 +15,7 @@ import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.BaseGameUtils;
 import com.jumpntrap.R;
 
-public class MenuActivity extends AppCompatActivity implements
+public final class MenuActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener {
 
@@ -33,7 +33,7 @@ public class MenuActivity extends AppCompatActivity implements
     };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
 
         super.onCreate(savedInstanceState);
@@ -47,7 +47,7 @@ public class MenuActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_menu);
 
         // Set up a click listener for buttons
-        for (int id : BUTTONS) {
+        for (final int id : BUTTONS) {
             findViewById(id).setOnClickListener(this);
         }
 
@@ -66,7 +66,7 @@ public class MenuActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onClick(View view) {
+    public void onClick(final View view) {
         switch (view.getId()) {
             case R.id.play:
                 startActivity(new Intent(this, RemoteGameActivity.class));
@@ -83,18 +83,18 @@ public class MenuActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onConnected(@Nullable Bundle bundle) {
+    public void onConnected(@Nullable final Bundle bundle) {
         Log.d(TAG, "onConnected");
     }
 
     @Override
-    public void onConnectionSuspended(int statusCode) {
+    public void onConnectionSuspended(final int statusCode) {
         googleApiClient.connect();
     }
 
     @Override
-    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-        Log.d(TAG, "onConnectionFailed");
+    public void onConnectionFailed(@NonNull final ConnectionResult connectionResult) {
+        Log.d(TAG, "onConnectionFailed() called, result: " + connectionResult);
 
         // Already solved
         if (resolvingConnectionFailure) {

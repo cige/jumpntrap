@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-
 public abstract class Game {
 
     public final static int NB_COLUMNS = 5;
@@ -35,17 +34,17 @@ public abstract class Game {
         player.setGame(this);
     }
 
-    public List<Player> getPlayers(){
+    public final List<Player> getPlayers(){
         return players;
     }
 
-    public final void addObserver(GameObserver observer){
+    public final void addObserver(final GameObserver observer){
         observers.add(observer);
     }
 
-    public boolean isTileOccupied(Position position) {
-        for (Player player : getPlayers()) {
-            Position pos = player.getPosition();
+    public final boolean isTileOccupied(final Position position) {
+        for (final Player player : getPlayers()) {
+            final Position pos = player.getPosition();
 
             if (pos != null && pos.equals(position)) {
                 return true;
@@ -59,7 +58,7 @@ public abstract class Game {
         return players.get(turn);
     }
 
-    public boolean boardContainsTile(Position pos) {
+    public final boolean boardContainsTile(Position pos) {
         return gameBoard.containsTile(pos);
     }
 
@@ -67,7 +66,7 @@ public abstract class Game {
         start(null, -1, null);
     }
 
-    public void start(boolean[][] tiles,int turn,int[] positions) {
+    public void start(final boolean[][] tiles, final int turn, final int[] positions) {
 
         if(players.size() < nbPlayers)
             throw new RuntimeException("The game require more players.");
@@ -81,7 +80,7 @@ public abstract class Game {
 
         this.state = GameState.STARTED;
 
-        for(GameObserver obs:observers){
+        for(final GameObserver obs:observers){
             obs.onGameStarted(this);
         }
 
@@ -104,7 +103,7 @@ public abstract class Game {
             throw new RuntimeException("Invalid position set");
 
         for(int i = 0; i < players.size(); i ++){
-            Position p = new Position(positions[i*2], positions[i*2 + 1]);
+            final Position p = new Position(positions[i*2], positions[i*2 + 1]);
             players.get(i).setPosition(p);
         }
     }
@@ -113,22 +112,17 @@ public abstract class Game {
         final Random rand = new Random();
 
         // Place players with a random algorithm
-        for (Player player : getPlayers()) {
-            int line, column;
+        for (final Player player : getPlayers()) {
             Position pos;
-
             do {
-                line = rand.nextInt(NB_LINES);
-                column = rand.nextInt(NB_COLUMNS);
-                pos = new Position(line, column);
-
+                pos = new Position(rand.nextInt(NB_LINES), rand.nextInt(NB_COLUMNS));
             } while (!gameBoard.containsTile(pos) || isTileOccupied(pos));
 
             player.setPosition(pos);
         }
     }
 
-    private int toss(int turn){
+    private int toss(final int turn){
         if(turn != -1) {
             this.turn = turn;
             return turn;
@@ -137,11 +131,11 @@ public abstract class Game {
         return this.turn;
     }
 
-    public int getTurn() {
+    public final int getTurn() {
         return turn;
     }
 
-    public void restart() {
+    public final void restart() {
         reset();
         start();
     }
@@ -159,25 +153,21 @@ public abstract class Game {
      * A game isn't over if at least 2 players are still alive.
      */
     private void checkIsOver() {
-
         Player winner = null;
 
-        for (Player player : getPlayers()) {
-
+        for (final Player player : getPlayers()) {
             if (player.isAlive()) {
-
                 if (winner != null){
                     return;
                 }
                 winner = player;
             }
-
         }
 
         gameOver(winner);
     }
 
-    final void dropTile(Position position) {
+    final void dropTile(final Position position) {
         this.gameBoard.dropTile(position);
     }
 
@@ -185,8 +175,7 @@ public abstract class Game {
         return gameBoard;
     }
 
-    public final void handleMove(Direction direction, Player player){
-
+    public final void handleMove(final Direction direction, final Player player){
         Log.d("Game","starting handleMove for "+ player.getClass().getName());
         if(isOver())
             return;
@@ -197,7 +186,7 @@ public abstract class Game {
         }
 
         player.playMove(this,direction);
-        for (GameObserver go : observers) {
+        for (final GameObserver go : observers) {
             go.onMovedPlayed(this, player, direction);
         }
         checkIsOver();
@@ -214,7 +203,7 @@ public abstract class Game {
         Log.d("Game","ending handleMove for "+ player.getClass().getName());
     }
 
-    private void gameOver(Player winner){
+    private void gameOver(final Player winner){
         this.state = GameState.GAME_OVER;
         for(GameObserver observer:observers){
             observer.onGameOver(this,winner);
@@ -228,20 +217,17 @@ public abstract class Game {
     @Override
     public String toString() {
 
-        StringBuilder builder = new StringBuilder();
-        Boolean[][] board = new Boolean[NB_LINES][NB_COLUMNS];
-
-
-        for (Player player : getPlayers()) {
-            Position p = player.getPosition();
+        final Boolean[][] board = new Boolean[NB_LINES][NB_COLUMNS];
+        for (final Player player : getPlayers()) {
+            final Position p = player.getPosition();
             if (p != null)
                 board[p.line][p.column] = true;
         }
 
+        final StringBuilder builder = new StringBuilder();
         for (int i = 0; i < NB_LINES; i++) {
             for (int j = 0; j < NB_COLUMNS; j++) {
-
-                Position position = new Position(i, j);
+                final Position position = new Position(i, j);
                 if (board[i][j] == Boolean.TRUE) {
                     builder.append("P");
                     continue;
@@ -260,7 +246,8 @@ public abstract class Game {
         return builder.toString();
     }
 
-    public GameState getGameState() {
+    public final GameState getGameState() {
         return state;
     }
+
 }

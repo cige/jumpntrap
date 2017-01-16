@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.jumpntrap.R;
 
-public class HelpActivity extends AppCompatActivity {
+public final class HelpActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,9 +21,10 @@ public class HelpActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_help);
 
-        TextView aboutTextView = (TextView) findViewById(R.id.about_text_view);
+        final TextView aboutTextView = (TextView) findViewById(R.id.about_text_view);
 
-        String aboutText = getString(R.string.about_text);
+        final String aboutText = getString(R.string.about_text);
         aboutTextView.setText(aboutText);
     }
+
 }

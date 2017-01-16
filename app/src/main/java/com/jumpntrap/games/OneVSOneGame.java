@@ -1,6 +1,5 @@
 package com.jumpntrap.games;
 
-
 import com.jumpntrap.model.Direction;
 import com.jumpntrap.model.Game;
 import com.jumpntrap.model.GameObserver;

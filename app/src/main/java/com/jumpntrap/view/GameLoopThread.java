@@ -5,8 +5,7 @@ import android.graphics.Canvas;
 /**
  * Based on: https://fr.jeffprod.com/blog/2015/les-bases-d-un-jeu-android-en-2d.html
  */
-class GameLoopThread extends Thread
-    {
+final class GameLoopThread extends Thread {
     // on définit arbitrairement le nombre d'images par secondes à 30
     private final static int FRAMES_PER_SECOND = 30;
 
@@ -18,51 +17,52 @@ class GameLoopThread extends Thread
     private boolean running = false; // état du thread, en cours ou non
 
     // constructeur de l'objet, on lui associe l'objet view passé en paramètre
-    GameLoopThread(GameView view) {
+    GameLoopThread(final GameView view) {
         this.view = view;
     }
 
     // défini l'état du thread : true ou false
-    void setRunning(boolean run) {
+    void setRunning(final boolean run) {
         running = run;
         }
 
     // démarrage du thread
     @Override
-    public void run()
-        {
-        // déclaration des temps de départ et de pause
-        long startTime;
-        long sleepTime;
-
+    public void run() {
         // boucle tant que running est vrai
         // il devient faux par setRunning(false), notamment lors de l'arrêt de l'application
         // cf : surfaceDestroyed() dans GameView.java
-        while (running)
-            {
+        while (running) {
             // horodatage actuel
-            startTime = System.currentTimeMillis();
+            final long startTime = System.currentTimeMillis();
 
             // Rendu de l'image, tout en vérrouillant l'accès car nous
             // y accédons à partir d'un processus distinct
             Canvas c = null;
             try {
                 c = view.getHolder().lockCanvas();
-                synchronized (view.getHolder()) {view.doDraw(c);}
+                synchronized (view.getHolder()) {
+                    view.doDraw(c);
                 }
-            finally
-                {
-                if (c != null) {view.getHolder().unlockCanvasAndPost(c);}
+            }
+            finally {
+                if (c != null) {
+                    view.getHolder().unlockCanvasAndPost(c);
                 }
+            }
 
             // Calcul du temps de pause, et pause si nécessaire
             // afin de ne réaliser le travail ci-dessus que X fois par secondes
-            sleepTime = SKIP_TICKS-(System.currentTimeMillis() - startTime);
+            final long sleepTime = SKIP_TICKS - (System.currentTimeMillis() - startTime);
             try {
-                if (sleepTime >= 0) {sleep(sleepTime);}
+                if (sleepTime >= 0) {
+                    sleep(sleepTime);
                 }
-            catch (Exception e) {e.printStackTrace();}
-            } // boucle while (running)
-        } // public void run()
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        } // boucle while (running)
+    } // public void run()
 
-    } // class GameLoopThread
+} // class GameLoopThread

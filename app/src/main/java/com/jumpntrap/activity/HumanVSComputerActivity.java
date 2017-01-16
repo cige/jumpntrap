@@ -6,11 +6,10 @@ import com.jumpntrap.games.OneVSOneGame;
 import com.jumpntrap.players.HumanPlayer;
 import com.jumpntrap.players.RandomPlayer;
 
-public class HumanVSComputerActivity extends GameActivity{
+public final class HumanVSComputerActivity extends GameActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         final RandomPlayer randomPlayer = new RandomPlayer();
@@ -20,7 +19,6 @@ public class HumanVSComputerActivity extends GameActivity{
         super.setGame(game);
         super.setOnTouchListener(humanPlayer);
         startGame();
-
     }
 
 }

@@ -1,7 +1,7 @@
 package com.jumpntrap.model;
 
-
 public enum Direction {
+
     NW(new Position(-1, -1)),
     N(new Position(-1, 0)),
     NE(new Position(-1, 1)),
@@ -13,7 +13,7 @@ public enum Direction {
 
     private final Position pos;
 
-    Direction(Position pos) {
+    Direction(final Position pos) {
         this.pos = pos;
     }
 
@@ -25,7 +25,8 @@ public enum Direction {
         return values()[(int) (Math.random() * values().length)];
     }
 
-    public Position newPosition(Position position) {
+    public final Position newPosition(Position position) {
         return new Position(position.line + this.pos.line, position.column + this.pos.column);
     }
+
 }

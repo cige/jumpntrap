@@ -86,7 +86,7 @@ public final class RemoteGameActivity extends GameActivity implements
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent e) {
+    public boolean onKeyDown(final int keyCode, final KeyEvent e) {
         Log.d(TAG, "onKeyDown");
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             Log.d(TAG, "onKeyDown : button back pressed");

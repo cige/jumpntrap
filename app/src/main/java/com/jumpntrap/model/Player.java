@@ -11,11 +11,11 @@ public abstract class Player {
         this.position = null;
     }
 
-    void setGame(Game game) {
+    void setGame(final Game game) {
         this.game = game;
     }
 
-    final void setPosition(Position pos) {
+    final void setPosition(final Position pos) {
         this.position = pos;
     }
 
@@ -27,12 +27,11 @@ public abstract class Player {
         return !isDead;
     }
 
-    final void playMove(Game game, Direction direction){
-
+    final void playMove(final Game game, final Direction direction){
         if(isDead)
             return;
 
-        Position newPosition = direction.newPosition(position);
+        final Position newPosition = direction.newPosition(position);
         game.dropTile(position);
 
         if(!game.isTileOccupied(newPosition)){
@@ -54,4 +53,5 @@ public abstract class Player {
     void resurrect() {
         isDead = false;
     }
+
 }

@@ -23,7 +23,8 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
     protected OneVSOneGame game;
     private GameView view;
 
-    protected void onCreate(Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         //removing the action bar
@@ -39,7 +40,7 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
         boardLayout.addView(view, ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
     }
 
-    void setGame(OneVSOneGame game){
+    void setGame(final OneVSOneGame game){
         this.game = game;
         game.addObserver(this);
         view.setGame(game);
@@ -54,7 +55,7 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
         }).start();
     }
 
-    public final void setOnTouchListener(HumanPlayer humanPlayer) {
+    public final void setOnTouchListener(final HumanPlayer humanPlayer) {
         this.findViewById(R.id.board).setOnTouchListener(humanPlayer);
     }
 
@@ -111,7 +112,7 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
     }
 
     @Override
-    public void onMovedPlayed(Game game,final Player player, Direction move){
+    public void onMovedPlayed(final Game game, final Player player, final Direction move){
         if(this.game != game)
             return;
 
@@ -133,4 +134,5 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
             topBar.setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.topPlayerWaitingColor));
         }}});
     }
+
 }

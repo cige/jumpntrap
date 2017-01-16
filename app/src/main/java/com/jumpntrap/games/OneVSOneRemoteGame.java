@@ -1,12 +1,11 @@
 package com.jumpntrap.games;
 
-
 import com.jumpntrap.model.GameObserver;
 import com.jumpntrap.model.Player;
 
 public final class OneVSOneRemoteGame extends OneVSOneGame implements GameObserver {
 
-    private boolean isHost;
+    final private boolean isHost;
 
     /**
      * @param host : true if the game is hosted on the user device, false if hosted on a remote device

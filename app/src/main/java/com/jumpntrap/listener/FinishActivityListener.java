@@ -1,6 +1,5 @@
 package com.jumpntrap.listener;
 
-
 import android.app.Activity;
 import android.support.v7.app.AlertDialog;
 import android.content.DialogInterface;

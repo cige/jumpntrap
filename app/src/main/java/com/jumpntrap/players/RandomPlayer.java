@@ -9,23 +9,23 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class RandomPlayer extends Player {
+public final class RandomPlayer extends Player {
 
     public RandomPlayer() {
     }
 
     @Override
-    public void actionRequired(Game game) {
-        Direction direction = chooseMove(game);
-        game.handleMove(direction,this);
+    public void actionRequired(final Game game) {
+        game.handleMove(chooseMove(game), this);
     }
 
-    private Direction chooseMove(Game game) {
-        List<Direction> directions = new ArrayList<>();
+    private Direction chooseMove(final Game game) {
+        final List<Direction> directions = new ArrayList<>();
+
         // Get valid directions
-        for (Direction direction : Direction.values()) {
+        for (final Direction direction : Direction.values()) {
             // Get player direction and add direction
-            Position newPosition = getPosition().add(direction.getPos());
+            final Position newPosition = getPosition().add(direction.getPos());
 
             // Check if new position is valid
             if (game.boardContainsTile(newPosition) && !game.isTileOccupied(newPosition)) {
@@ -46,7 +46,7 @@ public class RandomPlayer extends Player {
         }
 
         // Return random direction
-        int randomIndex = new Random().nextInt(directions.size());
-        return directions.get(randomIndex);
+        return directions.get(new Random().nextInt(directions.size()));
     }
+
 }
