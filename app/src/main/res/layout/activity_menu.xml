@@ -7,6 +7,7 @@
     tools:context=".activity.MenuActivity">
 
     <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/play"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -17,29 +18,32 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@string/play"
-            android:textSize="75sp"
+            android:textSize="60sp"
             android:textAllCaps="true"
             android:gravity="center"
             android:textColor="@color/emptyColor"/>
     </RelativeLayout>
 
     <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/training"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/tileColor"
         android:layout_weight="1">
         <TextView
+            android:id="@+id/tv_training"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@string/training"
-            android:textSize="75sp"
+            android:textSize="60sp"
             android:textAllCaps="true"
             android:gravity="center"
             android:textColor="@color/emptyColor"/>
     </RelativeLayout>
 
     <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/help"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -49,7 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:text="@string/help"
-            android:textSize="75sp"
+            android:textSize="60sp"
             android:textAllCaps="true"
             android:gravity="center"
             android:textColor="@color/emptyColor"/>
