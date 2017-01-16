@@ -7,10 +7,19 @@ import android.support.v7.app.AlertDialog;
 import com.jumpntrap.R;
 import com.jumpntrap.listener.FinishActivityListener;
 
+/**
+ * OpponentLeftDialog defines an alert dialog for when an opponent leaves a remote game.
+ */
 public final class OpponentLeftDialog {
-
+    /**
+     * The alert dialog.
+     */
     private final AlertDialog dialog;
 
+    /**
+     * Constructor.
+     * @param activity the activity.
+     */
     public OpponentLeftDialog(final Activity activity) {
         dialog = new AlertDialog.Builder(activity).create();
 
@@ -30,8 +39,10 @@ public final class OpponentLeftDialog {
         dialog.setCanceledOnTouchOutside(false);
     }
 
+    /**
+     * Show the dialog.
+     */
     public void show() {
         dialog.show();
     }
-
 }

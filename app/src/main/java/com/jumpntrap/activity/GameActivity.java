@@ -18,11 +18,24 @@ import com.jumpntrap.model.Player;
 import com.jumpntrap.players.HumanPlayer;
 import com.jumpntrap.view.GameView;
 
+/**
+ * GameActivity defines a game activity for a game.
+ */
 public abstract class GameActivity extends AppCompatActivity implements GameObserver {
-
+    /**
+     * Reference to the game.
+     */
     protected OneVSOneGame game;
+
+    /**
+     * Reference to the view.
+     */
     private GameView view;
 
+    /**
+     * Create the activity.
+     * @param savedInstanceState the instance state to save.
+     */
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,12 +53,19 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
         boardLayout.addView(view, ActionBar.LayoutParams.MATCH_PARENT, ActionBar.LayoutParams.MATCH_PARENT);
     }
 
+    /**
+     * Set a game.
+     * @param game the game to set.
+     */
     void setGame(final OneVSOneGame game){
         this.game = game;
         game.addObserver(this);
         view.setGame(game);
     }
 
+    /**
+     * Start the game.
+     */
     void startGame(){
         new Thread(new Runnable() {
             @Override
@@ -55,10 +75,19 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
         }).start();
     }
 
+    /**
+     * Set touch listener for a human player.
+     * @param humanPlayer the human player.
+     */
     public final void setOnTouchListener(final HumanPlayer humanPlayer) {
         this.findViewById(R.id.board).setOnTouchListener(humanPlayer);
     }
 
+    /**
+     * Callback when the game is over.
+     * @param game the game.
+     * @param winner the player who won.
+     */
     @Override
     public void onGameOver(final Game game,final Player winner) {
         if (this.game != game) {
@@ -82,6 +111,10 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
         });
     }
 
+    /**
+     * Callback when the game starts.
+     * @param game the game.
+     */
     @Override
     public void onGameStarted(final Game game) {
 
@@ -111,6 +144,12 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
 
     }
 
+    /**
+     * Callback when a move is played.
+     * @param game the game.
+     * @param player the current player.
+     * @param move the move played.
+     */
     @Override
     public void onMovedPlayed(final Game game, final Player player, final Direction move){
         if(this.game != game)
@@ -134,5 +173,4 @@ public abstract class GameActivity extends AppCompatActivity implements GameObse
             topBar.setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.topPlayerWaitingColor));
         }}});
     }
-
 }

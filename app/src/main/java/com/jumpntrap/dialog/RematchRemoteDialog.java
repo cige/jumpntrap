@@ -21,24 +21,75 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * RematchRemoteDialog defines an alert dialog for when a remote game is finished.
+ */
 public final class RematchRemoteDialog {
-
+    /**
+     * The alert dialog.
+     */
     private final AlertDialog dialog;
+
+    /**
+     * The activity.
+     */
     private final Activity activity;
 
+    /**
+     * Google API client.
+     */
     private final GoogleApiClient googleApiClient;
+
+    /**
+     * The game.
+     */
     private final OneVSOneRemoteGame game;
 
+    /**
+     * The current room id.
+     */
     private final String roomId;
+
+    /**
+     * The local player.
+     */
     private final Participant localParticipant;
+
+    /**
+     * The remote player.
+     */
     private final Participant remoteParticipant;
+
+    /**
+     * Flag to indicate if the local player if ready for another match.
+     */
     private boolean localParticipantReady = false;
+
+    /**
+     * Flag to indicate if the remote player if ready for another match.
+     */
     private boolean remoteParticipantReady = false;
 
+    /**
+     * Flag to indicate if the player is the host.
+     */
     private final boolean isHost;
 
+    /**
+     * Map between players and items of the adapter for the alert dialog.
+     */
     private final Map<Participant, PlayerItem> map;
 
+    /**
+     * Constructor.
+     * @param activity the activity.
+     * @param googleApiClient the Google API client.
+     * @param game the game.
+     * @param roomId the current room ID.
+     * @param localParticipant the local player.
+     * @param remoteParticipant the remote player.
+     * @param isHost the flag to indicate is the player is the host.
+     */
     public RematchRemoteDialog(final Activity activity, final GoogleApiClient googleApiClient, final OneVSOneRemoteGame game, final String roomId, final Participant localParticipant, final Participant remoteParticipant, final boolean isHost) {
         this.activity = activity;
         this.googleApiClient = googleApiClient;
@@ -68,7 +119,10 @@ public final class RematchRemoteDialog {
         dialog = builder.create();
     }
 
-    private void setupButtonsListeners() {
+    /**
+     * Setup listener for ready button.
+     */
+    private void setupListenerForReadyButton() {
         // Positive button = Ready
         dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,6 +141,10 @@ public final class RematchRemoteDialog {
         });
     }
 
+    /**
+     * Set a player text item as ready.
+     * @param participant the player to set as ready.
+     */
     private void setPlayerTextAsReady(final Participant participant) {
         final PlayerItem playerItem = map.get(participant);
         playerItem.setText(playerItem.getText() + " " + activity.getString(R.string.icon_check));
@@ -104,21 +162,29 @@ public final class RematchRemoteDialog {
         }
     }
 
+    /**
+     * Set the remote player text item as ready.
+     */
     public void setRemotePlayerTextAsReady() {
         remoteParticipantReady = true;
         setPlayerTextAsReady(remoteParticipant);
     }
 
+    /**
+     * Show the dialog.
+     */
     public void show() {
         dialog.show();
-        setupButtonsListeners();
+        setupListenerForReadyButton();
         dialog.setCanceledOnTouchOutside(false);
         dialog.setOnKeyListener(new FinishActivityListener(activity, dialog));
     }
 
+    /**
+     * Dismiss the dialog.
+     */
     public void dismiss() {
         dialog.dismiss();
     }
-
 }
 

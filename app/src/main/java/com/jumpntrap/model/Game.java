@@ -6,42 +6,92 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * Game defines the engine of the game.
+ */
 public abstract class Game {
-
+    /**
+     * Number of columns for the board.
+     */
     public final static int NB_COLUMNS = 5;
+
+    /**
+     * Number of lines for the board.
+     */
     public final static int NB_LINES = 7;
 
+    /**
+     * The board of the game.
+     */
     private GameBoard gameBoard;
+
+    /**
+     * The state of the game.
+     */
     private GameState state;
 
+    /**
+     * The number of players.
+     */
     private final int nbPlayers;
+
+    /**
+     * The list of the players.
+     */
     private final List<Player> players;
 
+    /**
+     * The observers.
+     */
     private final List<GameObserver> observers;
 
+    /**
+     * The turn of the player to play.
+     */
     private int turn;
 
+    /**
+     * Constructor.
+     * @param nbPlayers the number of players.
+     */
     public Game(int nbPlayers) {
         this.nbPlayers = nbPlayers;
         gameBoard = new GameBoard(NB_LINES, NB_COLUMNS);
-        players = new ArrayList<>();
+        players = new ArrayList<>(nbPlayers);
         observers = new ArrayList<>();
         state = GameState.INITIAL;
     }
 
+    /**
+     * Add a new player.
+     * @param player the player to add.
+     */
     protected final void addPlayer(Player player){
         players.add(player);
         player.setGame(this);
     }
 
+    /**
+     * Get the list of players.
+     * @return the list of players.
+     */
     public final List<Player> getPlayers(){
         return players;
     }
 
+    /**
+     * Add an observer.
+     * @param observer the observer to add.
+     */
     public final void addObserver(final GameObserver observer){
         observers.add(observer);
     }
 
+    /**
+     * Check if a tile is occupied by a player.
+     * @param position the position to check.
+     * @return true if a tile is occupied by a player.
+     */
     public final boolean isTileOccupied(final Position position) {
         for (final Player player : getPlayers()) {
             final Position pos = player.getPosition();
@@ -54,20 +104,37 @@ public abstract class Game {
         return false;
     }
 
+    /**
+     * Get the next player to play.
+     * @return the next player to player.
+     */
     public final Player nextPlayer(){
         return players.get(turn);
     }
 
+    /**
+     * Check if the board contains a tile.
+     * @param pos the position to check.
+     * @return true if the board contains a tile.
+     */
     public final boolean boardContainsTile(Position pos) {
         return gameBoard.containsTile(pos);
     }
 
+    /**
+     * Start the game.
+     */
     public void start() {
         start(null, -1, null);
     }
 
+    /**
+     * Start the game with default information.
+     * @param tiles the tiles of the board.
+     * @param turn the turn of the player to play.
+     * @param positions the position of the players.
+     */
     public void start(final boolean[][] tiles, final int turn, final int[] positions) {
-
         if(players.size() < nbPlayers)
             throw new RuntimeException("The game require more players.");
 
@@ -85,15 +152,21 @@ public abstract class Game {
         }
 
         nextPlayer().actionRequired(this);
-
     }
 
+    /**
+     * Init the game board.
+     * @param tiles the tiles of the board.
+     */
     private void initGameBoard(boolean[][] tiles) {
         gameBoard.init(tiles,nbPlayers);
     }
 
+    /**
+     * Init the players positions.
+     * @param positions the positions of the players.
+     */
     private void initPlayersPositions(int[] positions) { // positions = [ x1 , y1 , x2 , y2 ... ]
-
         if(positions == null){
             initRandomPlayersPositions();
             return;
@@ -108,6 +181,9 @@ public abstract class Game {
         }
     }
 
+    /**
+     * Initialize random positions for the playerd.
+     */
     private void initRandomPlayersPositions() {
         final Random rand = new Random();
 
@@ -122,6 +198,11 @@ public abstract class Game {
         }
     }
 
+    /**
+     * Get a random turn.
+     * @param turn the turn to set.
+     * @return a random turn.
+     */
     private int toss(final int turn){
         if(turn != -1) {
             this.turn = turn;
@@ -131,15 +212,25 @@ public abstract class Game {
         return this.turn;
     }
 
+    /**
+     * Get the turn.
+     * @return the turn.
+     */
     public final int getTurn() {
         return turn;
     }
 
+    /**
+     * Restart the game.
+     */
     public final void restart() {
         reset();
         start();
     }
 
+    /**
+     * Reset the game.
+     */
     public final void reset() {
         state = GameState.INITIAL;
 
@@ -150,9 +241,10 @@ public abstract class Game {
     }
 
     /**
-     * A game isn't over if at least 2 players are still alive.
+     * Check if a game is over.
      */
     private void checkIsOver() {
+        // A game isn't over if at least 2 players are still alive.
         Player winner = null;
 
         for (final Player player : getPlayers()) {
@@ -167,14 +259,27 @@ public abstract class Game {
         gameOver(winner);
     }
 
+    /**
+     * Drop a tile.
+     * @param position the position of the tile to drop.
+     */
     final void dropTile(final Position position) {
         this.gameBoard.dropTile(position);
     }
 
+    /**
+     * Get the board of the game.
+     * @return the board of the game.
+     */
     public final GameBoard getGameBoard() {
         return gameBoard;
     }
 
+    /**
+     * Handle a move played.
+     * @param direction the moved played.
+     * @param player the player who plays.
+     */
     public final void handleMove(final Direction direction, final Player player){
         Log.d("Game","starting handleMove for "+ player.getClass().getName());
         if(isOver())
@@ -203,6 +308,10 @@ public abstract class Game {
         Log.d("Game","ending handleMove for "+ player.getClass().getName());
     }
 
+    /**
+     * Set the game as over.
+     * @param winner the winner of the game.
+     */
     private void gameOver(final Player winner){
         this.state = GameState.GAME_OVER;
         for(GameObserver observer:observers){
@@ -210,10 +319,18 @@ public abstract class Game {
         }
     }
 
+    /**
+     * Check if the game is over.
+     * @return true if the game is over.
+     */
     private boolean isOver(){
         return this.state == GameState.GAME_OVER;
     }
 
+    /**
+     * Get the String representation of the instance.
+     * @return the String representation of the instance.
+     */
     @Override
     public String toString() {
 
@@ -246,8 +363,11 @@ public abstract class Game {
         return builder.toString();
     }
 
+    /**
+     * Get the state of the game.
+     * @return the state of the game.
+     */
     public final GameState getGameState() {
         return state;
     }
-
 }

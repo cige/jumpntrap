@@ -7,11 +7,29 @@ import com.jumpntrap.model.Position;
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * GameConfigMessage defines a game configuration message.
+ */
 public final class GameConfigMessage implements Serializable {
+    /**
+     * The tiles of the game board.
+     */
     private final boolean[][] tiles;
+
+    /**
+     * The turn of the player to play.
+     */
     private final int turn;
+
+    /**
+     * The position of the players.
+     */
     private final int[] positions;
 
+    /**
+     * Constructor.
+     * @param game the game.
+     */
     public GameConfigMessage(final Game game) {
         tiles = game.getGameBoard().serialize();
         turn = game.getTurn();
@@ -26,14 +44,26 @@ public final class GameConfigMessage implements Serializable {
         }
     }
 
+    /**
+     * Get the tiles of the board.
+     * @return the tiles of the board.
+     */
     public final boolean[][] getTiles() {
         return tiles;
     }
 
+    /**
+     * Get the turn of the player to player.
+     * @return the turn of the player to player.
+     */
     public final int getTurn() {
         return turn;
     }
 
+    /**
+     * Get the positions of the players.
+     * @return the positions of the playrs.
+     */
     public final int[] getPositions() {
         return positions;
     }

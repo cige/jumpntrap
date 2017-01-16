@@ -3,30 +3,49 @@ package com.jumpntrap.view;
 import android.graphics.Canvas;
 
 /**
+ * GameLoopThread defines a loop thread for the game.
  * Based on: https://fr.jeffprod.com/blog/2015/les-bases-d-un-jeu-android-en-2d.html
  */
 final class GameLoopThread extends Thread {
-    // on définit arbitrairement le nombre d'images par secondes à 30
+    /**
+     * Number of frames per second.
+     */
     private final static int FRAMES_PER_SECOND = 30;
 
-    // si on veut X images en 1 seconde, soit en 1000 ms,
-    // on doit en afficher une toutes les (1000 / X) ms.
+    /**
+     * Frequency.
+     */
     private final static int SKIP_TICKS = 1000 / FRAMES_PER_SECOND;
 
-    private final GameView view; // l'objet SurfaceView que nous verrons plus bas
-    private boolean running = false; // état du thread, en cours ou non
+    /**
+     * The game view.
+     */
+    private final GameView view;
 
-    // constructeur de l'objet, on lui associe l'objet view passé en paramètre
+    /**
+     * Running state of the game.
+     */
+    private boolean running = false;
+
+    /**
+     * Constructor
+     * @param view the view.
+     */
     GameLoopThread(final GameView view) {
         this.view = view;
     }
 
-    // défini l'état du thread : true ou false
+    /**
+     * Set the running state.
+     * @param run the running state to set.
+     */
     void setRunning(final boolean run) {
         running = run;
         }
 
-    // démarrage du thread
+    /**
+     * Start of the thread.
+     */
     @Override
     public void run() {
         // boucle tant que running est vrai
@@ -62,7 +81,6 @@ final class GameLoopThread extends Thread {
             catch (Exception e) {
                 e.printStackTrace();
             }
-        } // boucle while (running)
-    } // public void run()
-
-} // class GameLoopThread
+        }
+    }
+}

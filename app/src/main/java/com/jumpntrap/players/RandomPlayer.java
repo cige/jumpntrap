@@ -9,16 +9,30 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+/**
+ * RandomPlayer defines a random player (computer) for the game.
+ */
 public final class RandomPlayer extends Player {
-
+    /**
+     * Constructor.
+     */
     public RandomPlayer() {
     }
 
+    /**
+     * To perform an action.
+     * @param game the game.
+     */
     @Override
     public void actionRequired(final Game game) {
         game.handleMove(chooseMove(game), this);
     }
 
+    /**
+     * Get a random move.
+     * @param game the game.
+     * @return a random move.
+     */
     private Direction chooseMove(final Game game) {
         final List<Direction> directions = new ArrayList<>();
 
@@ -48,5 +62,4 @@ public final class RandomPlayer extends Player {
         // Return random direction
         return directions.get(new Random().nextInt(directions.size()));
     }
-
 }

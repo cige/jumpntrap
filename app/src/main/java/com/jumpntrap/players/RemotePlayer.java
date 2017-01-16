@@ -15,15 +15,41 @@ import com.jumpntrap.realtime.RematchMessage;
 
 import org.apache.commons.lang3.SerializationUtils;
 
+/**
+ * RemotePlayer defines a remote player for the game.
+ */
 public final class RemotePlayer extends Player implements GameObserver {
+    /**
+     * A tag for debug purpose.
+     */
     private final static String TAG = "RemotePlayer";
 
+    /**
+     * Google API client.
+     */
     private final GoogleApiClient googleApiClient;
+
+    /**
+     * The current room ID.
+     */
     private final String roomId;
+
+    /**
+     * The ID of the other player.
+     */
     private final String destId;
 
+    /**
+     * Flag to indicate if the player is the host.
+     */
     private boolean isHost;
 
+    /**
+     * Constructor.
+     * @param googleApiClient the Google API client.
+     * @param roomId the current room ID.
+     * @param destId the ID of the other player.
+     */
     public RemotePlayer(final GoogleApiClient googleApiClient, final String roomId, final String destId) {
         this.googleApiClient = googleApiClient;
         this.roomId = roomId;
@@ -31,6 +57,10 @@ public final class RemotePlayer extends Player implements GameObserver {
         isHost = false;
     }
 
+    /**
+     * Callback when the game starts.
+     * @param game the game.
+     */
     @Override
     public void onGameStarted(Game game) {
         Log.d(TAG, "onGameStarted");
@@ -43,6 +73,12 @@ public final class RemotePlayer extends Player implements GameObserver {
         Games.RealTimeMultiplayer.sendUnreliableMessage(googleApiClient, buff, roomId, destId);
     }
 
+    /**
+     * Callback when a move is played.
+     * @param game the game.
+     * @param player the current player.
+     * @param move the move played.
+     */
     @Override
     public void onMovedPlayed(Game game, Player player, Direction move) {
         Log.d(TAG, "onMovedPlayed");
@@ -57,15 +93,30 @@ public final class RemotePlayer extends Player implements GameObserver {
         Games.RealTimeMultiplayer.sendUnreliableMessage(googleApiClient, buff, roomId, destId);
     }
 
+    /**
+     * Callback when the game is over.
+     * @param game the game.
+     * @param winner the player who won.
+     */
     @Override
     public void onGameOver(Game game, Player winner) {
         Log.d(TAG, "onGameOver");
     }
 
+    /**
+     * Set the host.
+     * @param host the host to set.
+     */
     public void setHost(boolean host) {
         isHost = host;
     }
 
+    /**
+     * Handle a real time message.
+     * @param game the game.
+     * @param buff the buffer message received.
+     * @param dialog the rematch alert dialog.
+     */
     public void handleRealTimeMessageReceived(final Game game, final byte[] buff, final RematchRemoteDialog dialog) {
         Log.d(TAG, "handleRealTimeMessageReceived");
 

@@ -6,8 +6,14 @@ import com.jumpntrap.games.OneVSOneGame;
 import com.jumpntrap.players.HumanPlayer;
 import com.jumpntrap.players.RandomPlayer;
 
+/**
+ * HumanVSComputerActivity defines a game activity between a human player and a computer player.
+ */
 public final class HumanVSComputerActivity extends GameActivity {
-
+    /**
+     * Create the activity.
+     * @param savedInstanceState the instance state to save.
+     */
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,5 +26,4 @@ public final class HumanVSComputerActivity extends GameActivity {
         super.setOnTouchListener(humanPlayer);
         startGame();
     }
-
 }

@@ -15,21 +15,55 @@ import com.jumpntrap.games.OneVSOneGame;
 import com.jumpntrap.model.Player;
 import com.jumpntrap.model.Position;
 
-// SurfaceView est une surface de dessin.
-// référence : http://developer.android.com/reference/android/view/SurfaceView.html
+/**
+ * SurfaceView defines a drawing area.
+ * Reference : http://developer.android.com/reference/android/view/SurfaceView.html
+ */
 public class GameView extends SurfaceView implements SurfaceHolder.Callback {
-
+    /**
+     * The game loop thread.
+     */
     private GameLoopThread gameLoopThread;
-    private OneVSOneGame game;
-    private GameBoard board;
-    private final int nbLines,nbColumns;
 
-    // Dimensions
+    /**
+     * The game.
+     */
+    private OneVSOneGame game;
+
+    /**
+     * The board of the game.
+     */
+    private GameBoard board;
+
+    /**
+     * The number of lines of the board.
+     */
+    private final int nbLines;
+
+    /**
+     * The number of columns of the board.
+     */
+    private final int nbColumns;
+
+    /**
+     * The length of the tile.
+     */
     private int tileLength;
+
+    /**
+     * The height reminder.
+     */
     private final int[] heightReminder;
+
+    /**
+     * The weight reminder.
+     */
     private final int[] weightReminder;
 
-    // création de la surface de dessin
+    /**
+     * Constructor.
+     * @param context the context.
+     */
     public GameView(Context context) {
         super(context);
         getHolder().addCallback(this);
@@ -42,9 +76,11 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         this.weightReminder = new int[nbColumns];
     }
 
-    // Fonction qui "dessine" un écran de jeu
-    public void doDraw(Canvas canvas) {
-
+    /**
+     * Draw elements on the canvas.
+     * @param canvas the canvas where elements will be drawn.
+     */
+    public void doDraw(final Canvas canvas) {
         if(game == null)
             return;
 
@@ -59,11 +95,14 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         p.setFlags(Paint.ANTI_ALIAS_FLAG);
         this.drawBoard(canvas,p);
         this.drawPlayers(canvas,p);
-
     }
 
-    private void drawBoard(Canvas canvas,Paint paint) {
-
+    /**
+     * Draw the board of the game.
+     * @param canvas the canvas where elements will be drawn.
+     * @param paint the painting style.
+     */
+    private void drawBoard(final Canvas canvas, final Paint paint) {
         int lineCursor = 0;
         int columnCursor;
 
@@ -82,13 +121,16 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    private void drawPlayers(Canvas canvas,Paint paint) {
+    /**
+     * Draw the players of the game.
+     * @param canvas the canvas where elements will be drawn.
+     * @param paint the painting style.
+     */
+    private void drawPlayers(final Canvas canvas, final Paint paint) {
+        final int radius = tileLength / 2;
 
-        int radius = tileLength / 2;
-
-        for(Player player: game.getPlayers()){
-
-            Position pos = player.getPosition();
+        for(final Player player: game.getPlayers()){
+            final Position pos = player.getPosition();
 
             if(pos == null || !pos.isLegalPosition(nbLines,nbColumns))
                 continue;
@@ -102,24 +144,26 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
             else
                 continue;
 
-            int hreminders = 0;
-            int wreminders = 0;
+            int hReminders = 0;
+            int wReminders = 0;
             for(int line = 0; line < pos.getLine(); line ++){
-                hreminders += heightReminder[line];
+                hReminders += heightReminder[line];
             }
             for(int column = 0; column < pos.getColumn(); column ++){
-                wreminders += weightReminder[column];
+                wReminders += weightReminder[column];
             }
-            canvas.drawCircle(tileLength*pos.getColumn() + wreminders + radius + (weightReminder[pos.getColumn()] / 2),
-                    tileLength*pos.getLine() + hreminders + radius + (heightReminder[pos.getLine()] / 2),
+            canvas.drawCircle(tileLength*pos.getColumn() + wReminders + radius + (weightReminder[pos.getColumn()] / 2),
+                    tileLength*pos.getLine() + hReminders + radius + (heightReminder[pos.getLine()] / 2),
                     radius,paint);
         }
     }
 
-    // Fonction obligatoire de l'objet SurfaceView
-    // Fonction appelée immédiatement après la création de l'objet SurfaceView
+    /**
+     * Callback when surface is created.
+     * @param surfaceHolder the surface holder.
+     */
     @Override
-    public void surfaceCreated(SurfaceHolder surfaceHolder) {
+    public void surfaceCreated(final SurfaceHolder surfaceHolder) {
         // création du processus GameLoopThread si cela n'est pas fait
         if (gameLoopThread.getState() == Thread.State.TERMINATED) {
             gameLoopThread = new GameLoopThread(this);
@@ -128,11 +172,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         gameLoopThread.start();
     }
 
-    // Fonction obligatoire de l'objet SurfaceView
-    // Fonction appelée juste avant que l'objet ne soit détruit.
-    // on tente ici de stopper le processus de gameLoopThread
+    /**
+     * Callback when surface is destroyed.
+     * @param surfaceHolder the surface holder.
+     */
     @Override
-    public void surfaceDestroyed(SurfaceHolder surfaceHolder) {
+    public void surfaceDestroyed(final SurfaceHolder surfaceHolder) {
         boolean retry = true;
         gameLoopThread.setRunning(false);
         while (retry) {
@@ -145,30 +190,43 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    // Fonction obligatoire de l'objet SurfaceView
-    // Fonction appelée à la CREATION et MODIFICATION et ONRESUME de l'écran
-    // nous obtenons ici la largeur/hauteur de l'écran en pixels
+    /**
+     * Callback when surface changed.
+     * @param surfaceHolder the surface holder.
+     * @param i the format.
+     * @param w the weight.
+     * @param h the height.
+     */
     @Override
-    public void surfaceChanged(SurfaceHolder surfaceHolder, int i, int w, int h) {
-        this.resize(w,h);
+    public void surfaceChanged(final SurfaceHolder surfaceHolder, final int i, final int w, final int h) {
+        this.resize(w, h);
     }
 
-    private void resize(int w, int h) {
+    /**
+     * Resize the surface.
+     * @param w the width.
+     * @param h the height.
+     */
+    private void resize(final int w, final int h) {
         for(int i = 0; i < nbLines; i ++)
             heightReminder[i] = 0;
         for(int i = 0; i < nbColumns; i ++)
             weightReminder[i] = 0;
 
         this.tileLength =  Math.min(h / nbLines, w / nbColumns);
+
+        // For height
         int hReminder = h % tileLength;
-        int wReminder = w % tileLength;
         int i = 0;
         while(hReminder > 0){
             heightReminder[i] ++;
             hReminder --;
             i = (i + 1) % nbLines;
         }
+
+        // For width
         i = 0;
+        int wReminder = w % tileLength;
         while(wReminder > 0){
             weightReminder[i] ++;
             wReminder --;
@@ -176,8 +234,12 @@ public class GameView extends SurfaceView implements SurfaceHolder.Callback {
         }
     }
 
-    public void setGame(OneVSOneGame game) {
+    /**
+     * Set the game.
+     * @param game the game to set.
+     */
+    public void setGame(final OneVSOneGame game) {
         this.game = game;
         this.board = game.getGameBoard();
     }
-}// class GameView
+}

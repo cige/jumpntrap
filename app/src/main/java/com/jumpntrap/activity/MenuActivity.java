@@ -15,23 +15,50 @@ import com.google.android.gms.games.Games;
 import com.google.example.games.basegameutils.BaseGameUtils;
 import com.jumpntrap.R;
 
+/**
+ * MenuActivity defines the main activity of the application.
+ */
 public final class MenuActivity extends AppCompatActivity implements
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
         View.OnClickListener {
-
+    /**
+     * A tag for debug purpose.
+     */
     private final static String TAG = "MenuActivity";
 
+    /**
+     * Google API client.
+     */
     private GoogleApiClient googleApiClient;
+
+    /**
+     * Returned code when sign in to Google Play.
+     */
     private final static int RC_SIGN_IN = 9001;
+
+    /**
+     * Flag to indicate if connection failure to Google Play has already been handled.
+     */
     private boolean resolvingConnectionFailure = false;
+
+    /**
+     * Flag to indicate if we need to resolve connection to Google Play.
+     */
     private boolean autoStartSignInFlow = true;
 
+    /**
+     * List of buttons of the menu.
+     */
     private final static int[] BUTTONS = {
             R.id.play,
             R.id.training,
             R.id.help
     };
 
+    /**
+     * Create the activity.
+     * @param savedInstanceState the instance state to save.
+     */
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         Log.d(TAG, "onCreate");
@@ -65,6 +92,10 @@ public final class MenuActivity extends AppCompatActivity implements
         }
     }
 
+    /**
+     * Callback when a click event is triggered.
+     * @param view the view to handle.
+     */
     @Override
     public void onClick(final View view) {
         switch (view.getId()) {
@@ -82,16 +113,28 @@ public final class MenuActivity extends AppCompatActivity implements
         }
     }
 
+    /**
+     * Callback when connection to Google Play has succeed.
+     * @param bundle the bundle.
+     */
     @Override
     public void onConnected(@Nullable final Bundle bundle) {
         Log.d(TAG, "onConnected");
     }
 
+    /**
+     * Callback when connection to Google Play has been suspended.
+     * @param statusCode the status code of the connection.
+     */
     @Override
     public void onConnectionSuspended(final int statusCode) {
         googleApiClient.connect();
     }
 
+    /**
+     * Callback when connection to Google Play has failed.
+     * @param connectionResult the result of the connection.
+     */
     @Override
     public void onConnectionFailed(@NonNull final ConnectionResult connectionResult) {
         Log.d(TAG, "onConnectionFailed() called, result: " + connectionResult);
@@ -114,5 +157,4 @@ public final class MenuActivity extends AppCompatActivity implements
             );
         }
     }
-
 }

@@ -7,8 +7,14 @@ import android.widget.TextView;
 
 import com.jumpntrap.R;
 
+/**
+ * HelpActivity defines an activity to show details of the game.
+ */
 public final class HelpActivity extends AppCompatActivity {
-
+    /**
+     * Create the activity.
+     * @param savedInstanceState the instance state to save.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,5 +32,4 @@ public final class HelpActivity extends AppCompatActivity {
         final String aboutText = getString(R.string.about_text);
         aboutTextView.setText(aboutText);
     }
-
 }
