@@ -1,0 +1,12 @@
+<resources>
+    <string name="play">Jouer</string>
+    <string name="training">Training</string>
+    <string name="help">Aide</string>
+    <string name="sign_in_error">Une erreur de conexion est survenue. Merci de réessayer plus tard.</string>
+    <string name="ready">Prêt</string>
+    <string name="rematch">Rejouer</string>
+    <string name="opponent_left">Votre adversaire a quitté la partie</string>
+    <string name="about_text">Jump\'n Trap est une jeu de plateau où vous devez sauter d\'une dalle à une autre pour piéger votre adversaire.</string>
+    <string name="see_achievements">Voir les succès</string>
+    <string name="network_not_available">Réseau non disponible</string>
+</resources>
