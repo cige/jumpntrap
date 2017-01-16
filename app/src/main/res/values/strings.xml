@@ -1,24 +1,23 @@
 <resources>
-    <string name="app_name">Jump\'n Trap</string>
+    <string name="app_name" translatable="false">Jump\'n Trap</string>
     <string name="play">Play</string>
     <string name="training">Training</string>
     <string name="help">Help</string>
     <string name="sign_in_error">There was an issue with sign in. Please try again later.</string>
-    <string name="players">Players</string>
     <string name="ready">Ready</string>
     <string name="rematch">Rematch</string>
-    <string name="icon_check">\u2713</string>
-    <string name="zero_value">0</string>
+    <string name="icon_check" translatable="false">\u2713</string>
+    <string name="zero_value" translatable="false">0</string>
     <string name="opponent_left">Your opponent left the game</string>
-    <string name="ok">OK</string>
+    <string name="ok" translatable="false">OK</string>
     <string name="about_text">Jump\'n Trap is a board game where you have to jump from a tile to another to trap your opponent.</string>
-    <string name="see_achievements">See achievements</string>
+    <string name="see_achievements">See the achievements</string>
     <string name="network_not_available">Network not available</string>
 
     <!-- List of achievements IDs -->
-    <string name="event_first_game">CgkIgJq00ZsFEAIQBA</string>
-    <string name="event_addict">CgkIgJq00ZsFEAIQBQ</string>
-    <string name="event_nolife">CgkIgJq00ZsFEAIQBg</string>
-    <string name="event_pro">CgkIgJq00ZsFEAIQBw</string>
-    <string name="event_noob">CgkIgJq00ZsFEAIQCA</string>
+    <string name="event_first_game" translatable="false">CgkIgJq00ZsFEAIQBA</string>
+    <string name="event_addict" translatable="false">CgkIgJq00ZsFEAIQBQ</string>
+    <string name="event_nolife" translatable="false">CgkIgJq00ZsFEAIQBg</string>
+    <string name="event_pro" translatable="false">CgkIgJq00ZsFEAIQBw</string>
+    <string name="event_noob" translatable="false">CgkIgJq00ZsFEAIQCA</string>
 </resources>
